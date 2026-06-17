@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semester Matrix - Budget BD</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Floating Navigation Bar -->
+    <nav class="floating-nav">
+        <div class="nav-content">
+            <h1 class="logo"><i class="ph ph-wallet" style="margin-right: 8px;"></i>Budget<span>BD</span></h1>
+            <div class="nav-links">
+                <a href="index.html"><i class="ph ph-squares-four" style="margin-right: 4px;"></i>Dashboard</a>
+                <a href="semester.html" class="active"><i class="ph ph-calendar-check" style="margin-right: 4px;"></i>Semester Matrix</a>
+            </div>
+            <div class="user-profile">
+                <div class="avatar">S</div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="dashboard-container">
+        <div class="matrix-header">
+            <h2>Semester Cost Matrix</h2>
+            <p style="color: var(--text-muted); margin-top: 4px;">Plan your 4-6 month academic cycle and calculate your safe monthly budget.</p>
+        </div>
+
+        <div class="grid-layout">
+            <!-- Semester Setup -->
+            <section class="semester-setup-section card">
+                <h3>Semester Details</h3>
+                <form id="semester-form" class="transaction-form">
+                    <div class="form-group">
+                        <label for="semester-name">Semester Name</label>
+                        <input type="text" id="semester-name" placeholder="e.g., Spring 2026" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="duration">Duration (Months)</label>
+                        <input type="number" id="duration" placeholder="e.g., 4" required min="1" max="12">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="total-income">Total Expected Income (৳)</label>
+                        <input type="number" id="total-income" placeholder="Family support + stipends for whole semester" required min="0">
+                    </div>
+
+                    <button type="submit" class="btn-primary">Save Details</button>
+                </form>
+            </section>
+
+            <!-- Expected vs. Actual Matrix -->
+            <section class="fixed-costs-section card">
+                <h3>Expected vs. Actual Costs</h3>
+                <form id="cost-form" class="transaction-form">
+                    <div class="form-group">
+                        <label for="cost-name">Cost Name</label>
+                        <input type="text" id="cost-name" placeholder="e.g., University Admission Fee" required>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="form-group">
+                            <label for="cost-amount">Expected (৳)</label>
+                            <input type="number" id="cost-amount" placeholder="e.g., 15000" required min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="actual-amount">Actual (৳)</label>
+                            <input type="number" id="actual-amount" placeholder="e.g., 16000" required min="0">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary" style="background-color: var(--text-muted);">Add Cost</button>
+                </form>
+
+                <div class="cost-list" id="cost-list" style="margin-top: 16px; display: flex; flex-direction: column; gap: 8px;">
+                    <!-- Added costs will render here -->
+                </div>
+            </section>
+        </div>
+
+        <!-- Semester Summary -->
+        <section class="matrix-summary-section card glass-effect" style="margin-top: 12px; border: 2px solid var(--green);">
+            <h3 style="margin-bottom: 16px;">Matrix Summary: <span id="display-semester-name" style="color: var(--primary-color);">Not Set</span></h3>
+            
+            <div class="summary-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; text-align: center;">
+                <div class="summary-item">
+                    <p style="color: var(--text-muted); font-size: 0.875rem;">Total Income</p>
+                    <p style="font-size: 1.5rem; font-weight: 600;" class="text-green">৳<span id="summary-income">0</span></p>
+                </div>
+                <div class="summary-item">
+                    <p style="color: var(--text-muted); font-size: 0.875rem;">Major Fixed Costs</p>
+                    <p style="font-size: 1.5rem; font-weight: 600;" class="text-red">৳<span id="summary-costs">0</span></p>
+                </div>
+                <div class="summary-item">
+                    <p style="color: var(--text-muted); font-size: 0.875rem;">Remaining Disposable</p>
+                    <p style="font-size: 1.5rem; font-weight: 600;">৳<span id="summary-disposable">0</span></p>
+                </div>
+                <div class="summary-item" style="background: var(--bg-color); padding: 12px; border-radius: var(--radius-md);">
+                    <p style="color: var(--text-muted); font-size: 0.875rem;">Safe Monthly Budget</p>
+                    <p style="font-size: 1.75rem; font-weight: 700; color: var(--primary-color);">৳<span id="summary-monthly">0</span></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer style="text-align: center; padding: 24px; color: var(--text-muted); font-size: 0.875rem; margin-top: 40px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; gap: 12px;">
+        <p>&copy; 2026 Student Budget Planner BD. Web Programming Lab Group Project.</p>
+        <button class="btn-danger-outline" onclick="clearAllData()"><i class="ph ph-trash" style="margin-right: 4px;"></i>Clear All Data</button>
+    </footer>
+
+    <script src="js/utils.js"></script>
+    <script src="js/semester.js"></script>
+</body>
+</html>

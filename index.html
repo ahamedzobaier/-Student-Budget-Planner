@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Budget Planner BD</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Floating Navigation Bar -->
+    <nav class="floating-nav">
+        <div class="nav-content">
+            <h1 class="logo"><i class="ph ph-wallet" style="margin-right: 8px;"></i>Budget<span>BD</span></h1>
+            <div class="nav-links">
+                <a href="index.html" class="active"><i class="ph ph-squares-four" style="margin-right: 4px;"></i>Dashboard</a>
+                <a href="semester.html"><i class="ph ph-calendar-check" style="margin-right: 4px;"></i>Semester Matrix</a>
+            </div>
+            <div class="user-profile">
+                <div class="avatar">S</div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="dashboard-container">
+        <!-- Budget Alert Banner Container -->
+        <div id="budget-alert-container"></div>
+
+        <!-- Dashboard Header: Balance -->
+        <section class="balance-section card glass-effect">
+            <h2>Current Balance</h2>
+            <div class="balance-amount">৳<span id="current-balance">0.00</span></div>
+            <div class="balance-details">
+                <div class="income-summary">
+                    <span class="label">Total Income</span>
+                    <span class="amount text-green">৳<span id="total-income">0.00</span></span>
+                </div>
+                <div class="expense-summary">
+                    <span class="label">Total Expenses</span>
+                    <span class="amount text-red">৳<span id="total-expense">0.00</span></span>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid-layout">
+            <!-- Quick Add Form -->
+            <section class="quick-add-section card">
+                <h3>Quick Add</h3>
+                <form id="transaction-form" class="transaction-form">
+                    <div class="form-group">
+                        <label for="type">Type</label>
+                        <select id="type" required>
+                            <option value="expense">Expense</option>
+                            <option value="income">Income</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="amount">Amount (৳)</label>
+                        <input type="number" id="amount" placeholder="e.g., 50" required min="1" step="any">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" required>
+                            <option value="Mess Bill">Mess Bill</option>
+                            <option value="Rickshaw Fare">Rickshaw Fare</option>
+                            <option value="Mobile Recharge">Mobile Recharge</option>
+                            <option value="Photocopy/Print">Photocopy/Print</option>
+                            <option value="Food">Food/Snacks</option>
+                            <option value="Tuition">Tuition Fee</option>
+                            <option value="Other">Other Expense</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description (Optional)</label>
+                        <input type="text" id="description" placeholder="e.g., Rickshaw to campus">
+                    </div>
+
+                    <button type="submit" class="btn-primary">Add Transaction</button>
+                </form>
+            </section>
+
+            <!-- Set Budget Thresholds -->
+            <section class="budget-setup-section card">
+                <h3>Set Category Budget</h3>
+                <form id="budget-form" class="transaction-form">
+                    <div class="form-group">
+                        <label for="budget-category">Category</label>
+                        <select id="budget-category" required>
+                            <option value="Mess Bill">Mess Bill</option>
+                            <option value="Rickshaw Fare">Rickshaw Fare</option>
+                            <option value="Mobile Recharge">Mobile Recharge</option>
+                            <option value="Photocopy/Print">Photocopy/Print</option>
+                            <option value="Food">Food/Snacks</option>
+                            <option value="Tuition">Tuition Fee</option>
+                            <option value="Other">Other Expense</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="budget-limit">Monthly Limit (৳)</label>
+                        <input type="number" id="budget-limit" placeholder="e.g., 2000" required min="1">
+                    </div>
+                    <button type="submit" class="btn-primary" style="background-color: var(--text-muted);">Set Limit</button>
+                </form>
+            </section>
+        </div>
+
+        <!-- Category Alerts Panel -->
+        <section class="category-alerts-section card glass-effect" style="border: 2px solid var(--border-color);">
+            <h3>Category Alerts</h3>
+            <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 16px;">Monitor your real-time spending against your set category budgets.</p>
+            <div id="category-alerts-list" style="display: flex; flex-direction: column; gap: 12px;">
+                <!-- Budget progress bars will be rendered here by JS -->
+                <div class="empty-state">No category budgets set yet.</div>
+            </div>
+        </section>
+
+            <!-- Chart.js Spending Insights -->
+            <section class="insights-section card">
+                <h3>Spending Insights</h3>
+                <div class="chart-container" style="position: relative; height:200px; width:100%; margin-bottom: 24px;">
+                    <canvas id="spendingChart"></canvas>
+                </div>
+                <h3 style="margin-top: 16px;">Income vs Expense</h3>
+                <div class="chart-container" style="position: relative; height:200px; width:100%">
+                    <canvas id="incomeExpenseChart"></canvas>
+                </div>
+                <div class="empty-chart-state" id="empty-chart-state" style="display:none; text-align: center; color: var(--text-muted); margin-top: 50px;">
+                    Add some transactions to see your insights.
+                </div>
+            </section>
+        </div>
+
+        <!-- Recent Transactions -->
+        <section class="transactions-section card">
+            <h3>Recent Transactions</h3>
+            <div class="transaction-list" id="transaction-list">
+                <!-- Transactions will be added here by JS -->
+                <div class="empty-state">No transactions yet. Add one above!</div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer style="text-align: center; padding: 24px; color: var(--text-muted); font-size: 0.875rem; margin-top: 40px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; gap: 12px;">
+        <p>&copy; 2026 Student Budget Planner BD. Web Programming Lab Group Project.</p>
+        <button class="btn-danger-outline" onclick="clearAllData()"><i class="ph ph-trash" style="margin-right: 4px;"></i>Clear All Data</button>
+    </footer>
+
+    <script src="js/utils.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
