@@ -1,139 +1,133 @@
-// DOM Elements
-const semesterForm = document.getElementById('semester-form');
-const semNameEl = document.getElementById('semester-name');
-const durationEl = document.getElementById('duration');
-const totalIncomeEl = document.getElementById('total-income');
+// Semester Matrix page logic (semester.html)
 
-const costForm = document.getElementById('cost-form');
-const costNameEl = document.getElementById('cost-name');
-const costAmountEl = document.getElementById('cost-amount'); // Expected
-const actualAmountEl = document.getElementById('actual-amount'); // Actual
-const costListEl = document.getElementById('cost-list');
+const matrixTbody = document.getElementById('matrix-tbody');
 
-// Summary Elements
-const displaySemName = document.getElementById('display-semester-name');
-const sumIncome = document.getElementById('summary-income');
-const sumCosts = document.getElementById('summary-costs');
-const sumDisposable = document.getElementById('summary-disposable');
-const sumMonthly = document.getElementById('summary-monthly');
+const monthsConfig = [
+    { key: '2026-01', name: 'Jan' },
+    { key: '2026-02', name: 'Feb' },
+    { key: '2026-03', name: 'Mar' },
+    { key: '2026-04', name: 'Apr' },
+    { key: '2026-05', name: 'May' },
+    { key: '2026-06', name: 'Jun' }
+];
 
-// State
-let semesterPlan = JSON.parse(localStorage.getItem('semesterPlan')) || {
-    name: '',
-    duration: 0,
-    income: 0,
-    costs: []
-};
+const defaultCategories = ['Mess Bill', 'Transport', 'Tuition', 'Recharge', 'Misc'];
 
-// Format Number to currency string
-// (Moved to utils.js)
+function renderSemesterMatrix() {
+    const transactions = getStoredTransactions();
 
-function updateUI() {
-    // Populate forms if data exists
-    if (semesterPlan.name) semNameEl.value = semesterPlan.name;
-    if (semesterPlan.duration) durationEl.value = semesterPlan.duration;
-    if (semesterPlan.income) totalIncomeEl.value = semesterPlan.income;
+    // Collect all expense categories
+    const expenseCategories = new Set(defaultCategories);
+    transactions.forEach(t => {
+        if (t.type === 'expense' && t.category) {
+            expenseCategories.add(t.category);
+        }
+    });
 
-    // Render Summary
-    displaySemName.innerText = semesterPlan.name || 'Not Set';
-    sumIncome.innerText = formatMoney(semesterPlan.income);
+    const categoryList = Array.from(expenseCategories);
 
-    const totalCosts = semesterPlan.costs.reduce((acc, curr) => acc + curr.amount, 0);
-    sumCosts.innerText = formatMoney(totalCosts);
-
-    const remaining = semesterPlan.income - totalCosts;
-    sumDisposable.innerText = formatMoney(remaining);
-
-    if (semesterPlan.duration > 0) {
-        sumMonthly.innerText = formatMoney(remaining / semesterPlan.duration);
-    } else {
-        sumMonthly.innerText = '0.00';
-    }
-
-    // Render Cost List
-    costListEl.innerHTML = '';
-    if (semesterPlan.costs.length === 0) {
-        costListEl.innerHTML = '<div style="color: var(--text-muted); font-size: 0.875rem;">No costs added yet.</div>';
-    } else {
-        semesterPlan.costs.forEach(cost => {
-            const item = document.createElement('div');
-            item.style.display = 'flex';
-            item.style.flexDirection = 'column';
-            item.style.gap = '8px';
-            item.style.padding = '12px';
-            item.style.border = '1px solid var(--border-color)';
-            item.style.borderRadius = 'var(--radius-md)';
-            item.style.backgroundColor = '#fff';
-            
-            const expected = cost.amount || 0;
-            const actual = cost.actualAmount || 0;
-            const variance = expected - actual;
-            let badgeClass = variance >= 0 ? 'bg-green' : 'bg-red';
-            let badgeText = variance >= 0 ? `Saved ৳${formatMoney(variance)}` : `Overspent ৳${formatMoney(Math.abs(variance))}`;
-            
-            // If actual is 0, maybe they haven't paid it yet.
-            if (actual === 0 && expected > 0) {
-                badgeClass = 'bg-yellow';
-                badgeText = 'Pending';
-            }
-
-            item.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-weight: 600;">${cost.name}</span>
-                    <button class="btn-delete" onclick="removeCost(${cost.id})" style="cursor:pointer; background:none; border:none; color:var(--text-muted);">✖</button>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.875rem;">
-                    <div><span style="color:var(--text-muted);">Expected:</span> ৳${formatMoney(expected)}</div>
-                    <div><span style="color:var(--text-muted);">Actual:</span> ৳${formatMoney(actual)}</div>
-                </div>
-                <div style="font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; color: #fff; width: fit-content;" class="${badgeClass}">
-                    ${badgeText}
-                </div>
-            `;
-            costListEl.appendChild(item);
+    // Initialize matrix data structures
+    const matrix = {}; // { category: { '2026-01': amount, ... } }
+    categoryList.forEach(cat => {
+        matrix[cat] = {};
+        monthsConfig.forEach(m => {
+            matrix[cat][m.key] = 0;
         });
-    }
-}
+    });
 
-function saveSemester(e) {
-    e.preventDefault();
-    semesterPlan.name = semNameEl.value;
-    semesterPlan.duration = parseInt(durationEl.value);
-    semesterPlan.income = parseFloat(totalIncomeEl.value);
+    const monthlyTotalExp = {};
+    const monthlyTotalInc = {};
+    monthsConfig.forEach(m => {
+        monthlyTotalExp[m.key] = 0;
+        monthlyTotalInc[m.key] = 0;
+    });
+
+    // Populate matrix from transactions
+    transactions.forEach(t => {
+        if (!t.date) return;
+        const monthPrefix = t.date.substring(0, 7);
+
+        if (monthsConfig.some(m => m.key === monthPrefix)) {
+            const amt = Number(t.amount || 0);
+            if (t.type === 'income') {
+                monthlyTotalInc[monthPrefix] += amt;
+            } else if (t.type === 'expense') {
+                monthlyTotalExp[monthPrefix] += amt;
+                if (matrix[t.category]) {
+                    matrix[t.category][monthPrefix] += amt;
+                }
+            }
+        }
+    });
+
+    matrixTbody.innerHTML = '';
+
+    // 1. Render Category Rows
+    let grandTotalExp = 0;
+
+    categoryList.forEach(cat => {
+        const tr = document.createElement('tr');
+        let rowHtml = `<td style="text-align: left;"><strong>${cat}</strong></td>`;
+        let categorySemesterTotal = 0;
+
+        monthsConfig.forEach(m => {
+            const val = matrix[cat][m.key];
+            categorySemesterTotal += val;
+            const displayVal = val > 0 ? `Tk ${formatMoney(val)}` : '-';
+            rowHtml += `<td>${displayVal}</td>`;
+        });
+
+        grandTotalExp += categorySemesterTotal;
+        rowHtml += `<td style="font-weight: 600;">Tk ${formatMoney(categorySemesterTotal)}</td>`;
+        
+        tr.innerHTML = rowHtml;
+        matrixTbody.appendChild(tr);
+    });
+
+    // 2. Render Summary Row: Total Exp
+    const trExp = document.createElement('tr');
+    trExp.className = 'matrix-summary-row';
+    let expRowHtml = `<td style="text-align: left; color: var(--red);">Total Exp</td>`;
     
-    localStorage.setItem('semesterPlan', JSON.stringify(semesterPlan));
-    updateUI();
-    showToast('Semester details saved successfully!', 'success');
-}
+    monthsConfig.forEach(m => {
+        expRowHtml += `<td style="color: var(--red);">Tk ${formatMoney(monthlyTotalExp[m.key])}</td>`;
+    });
+    expRowHtml += `<td style="color: var(--red); font-weight: 700;">Tk ${formatMoney(grandTotalExp)}</td>`;
+    trExp.innerHTML = expRowHtml;
+    matrixTbody.appendChild(trExp);
 
-function addCost(e) {
-    e.preventDefault();
-    const newCost = {
-        id: Date.now(),
-        name: costNameEl.value,
-        amount: parseFloat(costAmountEl.value),
-        actualAmount: parseFloat(actualAmountEl.value) || 0
-    };
+    // 3. Render Summary Row: Total Inc
+    let grandTotalInc = 0;
+    const trInc = document.createElement('tr');
+    trInc.className = 'matrix-summary-row';
+    let incRowHtml = `<td style="text-align: left; color: var(--green);">Total Inc</td>`;
     
-    semesterPlan.costs.push(newCost);
-    localStorage.setItem('semesterPlan', JSON.stringify(semesterPlan));
-    
-    costNameEl.value = '';
-    costAmountEl.value = '';
-    actualAmountEl.value = '';
-    updateUI();
-    showToast('Cost added to matrix', 'success');
-}
+    monthsConfig.forEach(m => {
+        const incVal = monthlyTotalInc[m.key];
+        grandTotalInc += incVal;
+        incRowHtml += `<td style="color: var(--green);">Tk ${formatMoney(incVal)}</td>`;
+    });
+    incRowHtml += `<td style="color: var(--green); font-weight: 700;">Tk ${formatMoney(grandTotalInc)}</td>`;
+    trInc.innerHTML = incRowHtml;
+    matrixTbody.appendChild(trInc);
 
-function removeCost(id) {
-    semesterPlan.costs = semesterPlan.costs.filter(c => c.id !== id);
-    localStorage.setItem('semesterPlan', JSON.stringify(semesterPlan));
-    updateUI();
-    showToast('Cost removed from matrix', 'info');
-}
+    // 4. Render Summary Row: Balance (Net per month)
+    const grandBalance = grandTotalInc - grandTotalExp;
+    const trBal = document.createElement('tr');
+    trBal.className = 'matrix-summary-row';
+    trBal.style.backgroundColor = '#f8fafc';
+    let balRowHtml = `<td style="text-align: left; font-weight: 700;">Balance</td>`;
 
-semesterForm.addEventListener('submit', saveSemester);
-costForm.addEventListener('submit', addCost);
+    monthsConfig.forEach(m => {
+        const net = monthlyTotalInc[m.key] - monthlyTotalExp[m.key];
+        const colorStyle = net >= 0 ? 'color: var(--green);' : 'color: var(--red);';
+        balRowHtml += `<td style="${colorStyle} font-weight: 600;">Tk ${formatMoney(net)}</td>`;
+    });
+    const grandColorStyle = grandBalance >= 0 ? 'color: var(--green);' : 'color: var(--red);';
+    balRowHtml += `<td style="${grandColorStyle} font-weight: 700;">Tk ${formatMoney(grandBalance)}</td>`;
+    trBal.innerHTML = balRowHtml;
+    matrixTbody.appendChild(trBal);
+}
 
 // Init
-updateUI();
+renderSemesterMatrix();

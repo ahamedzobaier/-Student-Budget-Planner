@@ -1,11 +1,10 @@
 // Format Number to currency string
 function formatMoney(amount) {
-    return Number(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return Number(amount || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 }
 
 // Toast Notification System
 function showToast(message, type = 'success') {
-    // Check if container exists, if not create it
     let toastContainer = document.getElementById('toast-container');
     if (!toastContainer) {
         toastContainer = document.createElement('div');
@@ -34,29 +33,44 @@ function showToast(message, type = 'success') {
 
     toastContainer.appendChild(toast);
 
-    // Trigger animation
     requestAnimationFrame(() => {
         toast.classList.add('show');
     });
 
-    // Remove after 3 seconds
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => {
             if (toastContainer.contains(toast)) {
                 toastContainer.removeChild(toast);
             }
-        }, 300); // match CSS transition duration
+        }, 300);
     }, 3000);
 }
 
-// Clear All Data
+// Clear All User Data
 function clearAllData() {
-    if (confirm("Are you sure you want to delete all transactions and budgets? This cannot be undone.")) {
+    if (confirm("Are you sure you want to delete all transactions and budget limits? This will clear all data.")) {
         localStorage.clear();
         showToast("All data cleared successfully.", "success");
         setTimeout(() => {
             window.location.reload();
-        }, 1000);
+        }, 800);
     }
+}
+
+// Storage Helpers & Data Retrieval
+function getStoredTransactions() {
+    return JSON.parse(localStorage.getItem('transactions')) || [];
+}
+
+function getStoredCategoryBudgets() {
+    return JSON.parse(localStorage.getItem('categoryBudgets')) || {};
+}
+
+function saveTransactions(transactions) {
+    localStorage.setItem('transactions', JSON.stringify(transactions));
+}
+
+function saveCategoryBudgets(budgets) {
+    localStorage.setItem('categoryBudgets', JSON.stringify(budgets));
 }
