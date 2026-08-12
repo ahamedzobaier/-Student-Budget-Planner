@@ -11,7 +11,7 @@ const monthsConfig = [
     { key: '2026-06', name: 'Jun' }
 ];
 
-const defaultCategories = ['Mess Bill', 'Transport', 'Tuition', 'Recharge', 'Misc'];
+const defaultCategories = ['Mess Bill', 'Transport', 'Tuition', 'Recharge', 'Other Expenses'];
 
 function renderSemesterMatrix() {
     const transactions = getStoredTransactions();

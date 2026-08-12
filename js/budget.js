@@ -5,7 +5,7 @@ const budgetForm = document.getElementById('budget-set-form');
 const catSelect = document.getElementById('budget-cat-select');
 const limitInput = document.getElementById('budget-limit-input');
 
-const defaultCategories = ['Mess Bill', 'Transport', 'Tuition', 'Recharge', 'Misc'];
+const defaultCategories = ['Mess Bill', 'Transport', 'Tuition', 'Recharge', 'Other Expenses'];
 
 function renderBudgetTable() {
     const transactions = getStoredTransactions();

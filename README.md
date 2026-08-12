@@ -75,7 +75,7 @@ Key-value mapping of monthly limit thresholds per category:
   "Transport": 800,
   "Tuition": 3000,
   "Recharge": 300,
-  "Misc": 500
+  "Other Expenses": 500
 }
 ```
 

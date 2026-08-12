@@ -152,7 +152,7 @@ if (typeEl) {
                 <option value="Transport">Transport</option>
                 <option value="Recharge">Recharge</option>
                 <option value="Tuition">Tuition</option>
-                <option value="Misc">Misc</option>
+                <option value="Other Expenses">Other Expenses</option>
             `;
         }
     });
