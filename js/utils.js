@@ -74,7 +74,7 @@ function clearAllData() {
     }
 }
 
-// Storage Helpers & Data Retrieval (with auto migration for legacy Misc label)
+// Storage Helpers & Data Retrieval
 function getStoredTransactions() {
     const raw = JSON.parse(localStorage.getItem('transactions')) || [];
     return raw.map(t => {
@@ -103,18 +103,13 @@ function saveCategoryBudgets(budgets) {
     localStorage.setItem('categoryBudgets', JSON.stringify(budgets));
 }
 
-// University Semester Plan Storage Helpers
+// University Semester Plan Storage Helpers (Zero Demo Fallback)
 function getStoredSemesterPlan() {
     return JSON.parse(localStorage.getItem('semesterPlan')) || {
-        name: 'Spring 2026',
-        duration: 4,
-        income: 25000,
-        costs: [
-            { id: 1, name: 'University Admission / Tuition Fee', amount: 15000, actualAmount: 15000 },
-            { id: 2, name: 'Semester Exam Fee', amount: 3000, actualAmount: 3000 },
-            { id: 3, name: 'Lab Manuals & Books', amount: 2000, actualAmount: 2200 },
-            { id: 4, name: 'Hall / Hostel Bill', amount: 2000, actualAmount: 2000 }
-        ]
+        name: '',
+        duration: 0,
+        income: 0,
+        costs: []
     };
 }
 
