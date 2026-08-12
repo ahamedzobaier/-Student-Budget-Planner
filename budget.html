@@ -18,13 +18,14 @@
     <!-- Floating Navigation Bar -->
     <nav class="floating-nav">
         <div class="nav-content">
-            <h1 class="logo"><i class="ph ph-wallet" style="margin-right: 8px;"></i>Budget<span>BD</span></h1>
+            <h1 class="logo"><i class="ph ph-wallet" style="margin-right: 6px;"></i>Budget<span>BD</span></h1>
             <div class="nav-links">
-                <a href="index.html"><i class="ph ph-squares-four" style="margin-right: 4px;"></i>Dashboard</a>
-                <a href="transactions.html"><i class="ph ph-receipt" style="margin-right: 4px;"></i>Transactions</a>
-                <a href="budget.html" class="active"><i class="ph ph-chart-pie-slice" style="margin-right: 4px;"></i>Budget</a>
-                <a href="charts.html"><i class="ph ph-chart-bar" style="margin-right: 4px;"></i>Charts</a>
-                <a href="semester.html"><i class="ph ph-calendar-check" style="margin-right: 4px;"></i>Semester</a>
+                <a href="index.html"><i class="ph ph-squares-four"></i>Dashboard</a>
+                <a href="transactions.html"><i class="ph ph-receipt"></i>Transactions</a>
+                <a href="budget.html" class="active"><i class="ph ph-chart-pie-slice"></i>Budget</a>
+                <a href="charts.html"><i class="ph ph-chart-bar"></i>Charts</a>
+                <a href="monthly.html"><i class="ph ph-calendar"></i>Monthly View</a>
+                <a href="semester.html"><i class="ph ph-graduation-cap"></i>Semester</a>
             </div>
             <div class="user-profile">
                 <div class="avatar" title="Student Profile">S</div>
@@ -35,7 +36,7 @@
     <main class="dashboard-container">
         <div>
             <h2>Category Budget Limits</h2>
-            <p style="color: var(--text-muted); margin-top: 4px; font-size: 0.9rem;">Set monthly spending limits per category and monitor spent vs limit in real time.</p>
+            <p style="color: var(--text-muted); margin-top: 2px; font-size: 0.85rem;">Set monthly spending limits per category and monitor spent vs limit in real time.</p>
         </div>
 
         <!-- Budget Table -->
@@ -58,10 +59,10 @@
         </section>
 
         <!-- Set / Update Budget Limit Form -->
-        <section class="card glass-effect" style="margin-top: 12px;">
+        <section class="card" style="margin-top: 10px;">
             <h3>Set / Update Budget Limit</h3>
-            <form id="budget-set-form" class="transaction-form" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;">
-                <div class="form-group" style="flex: 1; min-width: 200px;">
+            <form id="budget-set-form" class="transaction-form" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;">
+                <div class="form-group" style="flex: 1; min-width: 160px;">
                     <label for="budget-cat-select">Category</label>
                     <select id="budget-cat-select" required>
                         <option value="Mess Bill">Mess Bill</option>
@@ -72,19 +73,19 @@
                     </select>
                 </div>
 
-                <div class="form-group" style="flex: 1; min-width: 200px;">
+                <div class="form-group" style="flex: 1; min-width: 160px;">
                     <label for="budget-limit-input">Monthly Limit (Tk)</label>
                     <input type="number" id="budget-limit-input" placeholder="e.g. 2000" required min="1">
                 </div>
 
-                <button type="submit" class="btn-primary" style="padding: 11px 24px;">Set Limit</button>
+                <button type="submit" class="btn-primary" style="padding: 9px 20px;">Set Limit</button>
             </form>
         </section>
     </main>
 
-    <footer style="text-align: center; padding: 24px; color: var(--text-muted); font-size: 0.875rem; margin-top: 40px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; gap: 12px;">
+    <footer style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.825rem; margin-top: 36px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; gap: 10px;">
         <p>&copy; 2026 Student Budget Planner BD. Web Programming Group Project - Uttara University.</p>
-        <button class="btn-danger-outline" onclick="clearAllData()"><i class="ph ph-trash" style="margin-right: 4px;"></i>Clear All Data</button>
+        <button class="btn-danger-outline" onclick="clearAllData()"><i class="ph ph-trash"></i>Clear All Data</button>
     </footer>
 
     <script src="js/utils.js"></script>

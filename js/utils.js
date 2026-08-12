@@ -3,6 +3,22 @@ function formatMoney(amount) {
     return Number(amount || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 }
 
+// 12-Month Configuration List
+const ALL_12_MONTHS = [
+    { key: '2026-01', name: 'Jan', fullName: 'January 2026' },
+    { key: '2026-02', name: 'Feb', fullName: 'February 2026' },
+    { key: '2026-03', name: 'Mar', fullName: 'March 2026' },
+    { key: '2026-04', name: 'Apr', fullName: 'April 2026' },
+    { key: '2026-05', name: 'May', fullName: 'May 2026' },
+    { key: '2026-06', name: 'Jun', fullName: 'June 2026' },
+    { key: '2026-07', name: 'Jul', fullName: 'July 2026' },
+    { key: '2026-08', name: 'Aug', fullName: 'August 2026' },
+    { key: '2026-09', name: 'Sep', fullName: 'September 2026' },
+    { key: '2026-10', name: 'Oct', fullName: 'October 2026' },
+    { key: '2026-11', name: 'Nov', fullName: 'November 2026' },
+    { key: '2026-12', name: 'Dec', fullName: 'December 2026' }
+];
+
 // Toast Notification System
 function showToast(message, type = 'success') {
     let toastContainer = document.getElementById('toast-container');
@@ -49,7 +65,7 @@ function showToast(message, type = 'success') {
 
 // Clear All User Data
 function clearAllData() {
-    if (confirm("Are you sure you want to delete all transactions and budget limits? This will clear all data.")) {
+    if (confirm("Are you sure you want to delete all transactions, budget limits, and university semester data? This will clear all data.")) {
         localStorage.clear();
         showToast("All data cleared successfully.", "success");
         setTimeout(() => {
@@ -58,13 +74,25 @@ function clearAllData() {
     }
 }
 
-// Storage Helpers & Data Retrieval
+// Storage Helpers & Data Retrieval (with auto migration for legacy Misc label)
 function getStoredTransactions() {
-    return JSON.parse(localStorage.getItem('transactions')) || [];
+    const raw = JSON.parse(localStorage.getItem('transactions')) || [];
+    return raw.map(t => {
+        if (t.category === 'Misc') {
+            return { ...t, category: 'Other Expenses' };
+        }
+        return t;
+    });
 }
 
 function getStoredCategoryBudgets() {
-    return JSON.parse(localStorage.getItem('categoryBudgets')) || {};
+    const raw = JSON.parse(localStorage.getItem('categoryBudgets')) || {};
+    if (raw['Misc']) {
+        raw['Other Expenses'] = (raw['Other Expenses'] || 0) + raw['Misc'];
+        delete raw['Misc'];
+        localStorage.setItem('categoryBudgets', JSON.stringify(raw));
+    }
+    return raw;
 }
 
 function saveTransactions(transactions) {
@@ -73,4 +101,23 @@ function saveTransactions(transactions) {
 
 function saveCategoryBudgets(budgets) {
     localStorage.setItem('categoryBudgets', JSON.stringify(budgets));
+}
+
+// University Semester Plan Storage Helpers
+function getStoredSemesterPlan() {
+    return JSON.parse(localStorage.getItem('semesterPlan')) || {
+        name: 'Spring 2026',
+        duration: 4,
+        income: 25000,
+        costs: [
+            { id: 1, name: 'University Admission / Tuition Fee', amount: 15000, actualAmount: 15000 },
+            { id: 2, name: 'Semester Exam Fee', amount: 3000, actualAmount: 3000 },
+            { id: 3, name: 'Lab Manuals & Books', amount: 2000, actualAmount: 2200 },
+            { id: 4, name: 'Hall / Hostel Bill', amount: 2000, actualAmount: 2000 }
+        ]
+    };
+}
+
+function saveSemesterPlan(plan) {
+    localStorage.setItem('semesterPlan', JSON.stringify(plan));
 }

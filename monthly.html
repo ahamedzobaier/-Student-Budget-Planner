@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly View - Student Budget Planner BD</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Floating Navigation Bar -->
+    <nav class="floating-nav">
+        <div class="nav-content">
+            <h1 class="logo"><i class="ph ph-wallet" style="margin-right: 6px;"></i>Budget<span>BD</span></h1>
+            <div class="nav-links">
+                <a href="index.html"><i class="ph ph-squares-four"></i>Dashboard</a>
+                <a href="transactions.html"><i class="ph ph-receipt"></i>Transactions</a>
+                <a href="budget.html"><i class="ph ph-chart-pie-slice"></i>Budget</a>
+                <a href="charts.html"><i class="ph ph-chart-bar"></i>Charts</a>
+                <a href="monthly.html" class="active"><i class="ph ph-calendar"></i>Monthly View</a>
+                <a href="semester.html"><i class="ph ph-graduation-cap"></i>Semester</a>
+            </div>
+            <div class="user-profile">
+                <div class="avatar" title="Student Profile">S</div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="dashboard-container">
+        <div>
+            <h2>12-Month Expense View</h2>
+            <p style="color: var(--text-muted); margin-top: 2px; font-size: 0.85rem;">Month-by-month side-by-side comparison of routine student expenses across the full year (Jan – Dec).</p>
+        </div>
+
+        <!-- 12-Month Matrix Data Table -->
+        <section class="table-responsive" style="margin-top: 8px;">
+            <table class="data-table matrix-table" id="monthly-matrix-table">
+                <thead>
+                    <tr>
+                        <th style="text-align: left;">Category</th>
+                        <th>Jan</th>
+                        <th>Feb</th>
+                        <th>Mar</th>
+                        <th>Apr</th>
+                        <th>May</th>
+                        <th>Jun</th>
+                        <th>Jul</th>
+                        <th>Aug</th>
+                        <th>Sep</th>
+                        <th>Oct</th>
+                        <th>Nov</th>
+                        <th>Dec</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="monthly-matrix-tbody">
+                    <!-- Populated automatically from transactions by JS -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.825rem; margin-top: 36px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; gap: 10px;">
+        <p>&copy; 2026 Student Budget Planner BD. Web Programming Group Project - Uttara University.</p>
+        <button class="btn-danger-outline" onclick="clearAllData()"><i class="ph ph-trash"></i>Clear All Data</button>
+    </footer>
+
+    <script src="js/utils.js"></script>
+    <script src="js/monthly.js"></script>
+</body>
+</html>

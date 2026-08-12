@@ -58,7 +58,7 @@ function renderCharts() {
                 plugins: {
                     legend: {
                         position: 'bottom',
-                        labels: { font: { family: 'Inter', size: 12 } }
+                        labels: { font: { family: 'Inter', size: 11 } }
                     },
                     tooltip: {
                         callbacks: {
@@ -73,9 +73,9 @@ function renderCharts() {
         });
     }
 
-    // 2. Render Monthly Spending Trend Bar Chart (Jan - Jun)
-    const monthKeys = ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06'];
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+    // 2. Render 12-Month Spending Trend Bar Chart (Jan - Dec)
+    const monthKeys = ALL_12_MONTHS.map(m => m.key);
+    const monthNames = ALL_12_MONTHS.map(m => m.name);
     const monthlyTotals = monthKeys.map(key => {
         return expenses
             .filter(t => t.date && t.date.startsWith(key))
@@ -92,10 +92,10 @@ function renderCharts() {
             data: {
                 labels: monthNames,
                 datasets: [{
-                    label: 'Total Expenses (Tk)',
+                    label: 'Expenses (Tk)',
                     data: monthlyTotals,
                     backgroundColor: '#1e3a8a',
-                    borderRadius: 6,
+                    borderRadius: 4,
                     hoverBackgroundColor: '#d97706'
                 }]
             },
@@ -115,10 +115,12 @@ function renderCharts() {
                 scales: {
                     y: {
                         beginAtZero: true,
-                        grid: { color: '#f1f5f9' }
+                        grid: { color: '#f1f5f9' },
+                        ticks: { font: { size: 10 } }
                     },
                     x: {
-                        grid: { display: false }
+                        grid: { display: false },
+                        ticks: { font: { size: 10 } }
                     }
                 }
             }

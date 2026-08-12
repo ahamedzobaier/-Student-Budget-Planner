@@ -20,13 +20,14 @@
     <!-- Floating Navigation Bar -->
     <nav class="floating-nav">
         <div class="nav-content">
-            <h1 class="logo"><i class="ph ph-wallet" style="margin-right: 8px;"></i>Budget<span>BD</span></h1>
+            <h1 class="logo"><i class="ph ph-wallet" style="margin-right: 6px;"></i>Budget<span>BD</span></h1>
             <div class="nav-links">
-                <a href="index.html"><i class="ph ph-squares-four" style="margin-right: 4px;"></i>Dashboard</a>
-                <a href="transactions.html"><i class="ph ph-receipt" style="margin-right: 4px;"></i>Transactions</a>
-                <a href="budget.html"><i class="ph ph-chart-pie-slice" style="margin-right: 4px;"></i>Budget</a>
-                <a href="charts.html" class="active"><i class="ph ph-chart-bar" style="margin-right: 4px;"></i>Charts</a>
-                <a href="semester.html"><i class="ph ph-calendar-check" style="margin-right: 4px;"></i>Semester</a>
+                <a href="index.html"><i class="ph ph-squares-four"></i>Dashboard</a>
+                <a href="transactions.html"><i class="ph ph-receipt"></i>Transactions</a>
+                <a href="budget.html"><i class="ph ph-chart-pie-slice"></i>Budget</a>
+                <a href="charts.html" class="active"><i class="ph ph-chart-bar"></i>Charts</a>
+                <a href="monthly.html"><i class="ph ph-calendar"></i>Monthly View</a>
+                <a href="semester.html"><i class="ph ph-graduation-cap"></i>Semester</a>
             </div>
             <div class="user-profile">
                 <div class="avatar" title="Student Profile">S</div>
@@ -35,49 +36,55 @@
     </nav>
 
     <main class="dashboard-container">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
             <div>
                 <h2>Spending Charts</h2>
-                <p style="color: var(--text-muted); margin-top: 4px; font-size: 0.9rem;">Visual analytics of spending by category and monthly spending trend powered by Chart.js.</p>
+                <p style="color: var(--text-muted); margin-top: 2px; font-size: 0.85rem;">12-month spending visualization by category and full-year monthly spending trend.</p>
             </div>
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <label for="chart-month-select" style="font-weight: 500; font-size: 0.9rem;">Select Month:</label>
-                <select id="chart-month-select" style="padding: 8px 14px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <label for="chart-month-select" style="font-weight: 600; font-size: 0.85rem;">Select Month:</label>
+                <select id="chart-month-select" style="padding: 6px 12px; font-size: 0.85rem; width: auto;">
                     <option value="2026-06">June 2026</option>
-                    <option value="2026-05">May 2026</option>
-                    <option value="2026-04">April 2026</option>
-                    <option value="2026-03">March 2026</option>
-                    <option value="2026-02">February 2026</option>
                     <option value="2026-01">January 2026</option>
+                    <option value="2026-02">February 2026</option>
+                    <option value="2026-03">March 2026</option>
+                    <option value="2026-04">April 2026</option>
+                    <option value="2026-05">May 2026</option>
+                    <option value="2026-07">July 2026</option>
+                    <option value="2026-08">August 2026</option>
+                    <option value="2026-09">September 2026</option>
+                    <option value="2026-10">October 2026</option>
+                    <option value="2026-11">November 2026</option>
+                    <option value="2026-12">December 2026</option>
                     <option value="all">All Time</option>
                 </select>
             </div>
         </div>
 
-        <div class="grid-layout" style="margin-top: 20px;">
+        <div class="grid-layout" style="margin-top: 10px;">
             <!-- Category Pie/Doughnut Chart Card -->
             <section class="card">
                 <h3>Spending by Category</h3>
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px;">Breakdown of expenses for the selected period.</p>
-                <div class="chart-container" style="position: relative; height: 320px; width: 100%;">
+                <p style="font-size: 0.775rem; color: var(--text-muted); margin-bottom: 12px;">Breakdown of expenses for the selected period.</p>
+                <div class="chart-container" style="position: relative; height: 280px; width: 100%;">
                     <canvas id="categoryPieChart"></canvas>
                 </div>
             </section>
 
             <!-- Monthly Trend Bar Chart Card -->
             <section class="card">
-                <h3>Monthly Spending Trend</h3>
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px;">Comparison of monthly spending across the semester.</p>
-                <div class="chart-container" style="position: relative; height: 320px; width: 100%;">
+                <h3>12-Month Spending Trend</h3>
+                <p style="font-size: 0.775rem; color: var(--text-muted); margin-bottom: 12px;">Full-year monthly expense comparison (Jan – Dec).</p>
+                <div class="chart-container" style="position: relative; height: 280px; width: 100%;">
                     <canvas id="monthlyTrendChart"></canvas>
                 </div>
             </section>
         </div>
     </main>
 
-    <footer style="text-align: center; padding: 24px; color: var(--text-muted); font-size: 0.875rem; margin-top: 40px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; gap: 12px;">
+    <footer style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.825rem; margin-top: 36px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; gap: 10px;">
         <p>&copy; 2026 Student Budget Planner BD. Web Programming Group Project - Uttara University.</p>
-        <button class="btn-danger-outline" onclick="clearAllData()"><i class="ph ph-trash" style="margin-right: 4px;"></i>Clear All Data</button>
+        <button class="btn-danger-outline" onclick="clearAllData()"><i class="ph ph-trash"></i>Clear All Data</button>
     </footer>
 
     <script src="js/utils.js"></script>

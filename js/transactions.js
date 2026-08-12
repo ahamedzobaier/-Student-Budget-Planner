@@ -36,7 +36,7 @@ function renderTransactionsTable() {
         // Category Filter
         if (selectedCategory !== 'all' && t.category !== selectedCategory) return false;
 
-        // Month Filter (expecting YYYY-MM prefix match)
+        // Month Filter (YYYY-MM prefix match)
         if (selectedMonth !== 'all') {
             if (!t.date || !t.date.startsWith(selectedMonth)) return false;
         }
@@ -71,7 +71,7 @@ function renderTransactionsTable() {
     if (filtered.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" style="text-align: center; padding: 32px; color: var(--text-muted);">
+                <td colspan="6" style="text-align: center; padding: 24px; color: var(--text-muted);">
                     No transactions found matching the current filters.
                 </td>
             </tr>
@@ -94,7 +94,7 @@ function renderTransactionsTable() {
             <td style="text-transform: capitalize;">${t.type}</td>
             <td class="${amtClass}" style="font-weight: 600;">${sign}Tk ${formatMoney(t.amount)}</td>
             <td style="text-align: center;">
-                <button class="btn-delete" onclick="deleteTransactionItem(${t.id})" title="Delete entry" style="color: var(--red); font-weight: bold; cursor: pointer;">X</button>
+                <button class="btn-danger-outline" onclick="deleteTransactionItem(${t.id})" title="Delete entry" style="padding: 2px 8px; font-size: 0.75rem;">Del</button>
             </td>
         `;
         tbody.appendChild(tr);
