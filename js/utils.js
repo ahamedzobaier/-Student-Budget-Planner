@@ -29,7 +29,9 @@ function formatDateDisplay(dateStr) {
     } catch (e) {
         return dateStr;
     }
-// Get exact Local YYYY-MM-DD Date string (respecting user local timezone)
+}
+
+// Get exact Local YYYY-MM-DD Date string (respects user local timezone, not UTC)
 function getLocalDateString() {
     const d = new Date();
     const yr = d.getFullYear();

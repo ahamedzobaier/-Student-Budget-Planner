@@ -144,15 +144,26 @@ function renderRecentTransactions(txList) {
     });
 }
 
-// Check category spending limits and show warning banners if over limit
+// Check category spending limits for CURRENT MONTH and show warning banners if over limit
 function checkBudgetWarnings(allTransactions) {
     if (!alertContainer) return;
     alertContainer.innerHTML = '';
 
+    // Only check spending for current month (budget limits are monthly targets)
+    const now = new Date();
+    const currentYearStr = now.getFullYear().toString();
+    const currentMonthStr = String(now.getMonth() + 1);
+
     const expensesByCategory = {};
     allTransactions.forEach(t => {
-        if (t.type === 'expense') {
-            expensesByCategory[t.category] = (expensesByCategory[t.category] || 0) + Number(t.amount);
+        if (t.type === 'expense' && t.date) {
+            const parts = t.date.split('-');
+            const txYr = parts[0];
+            const txMo = parseInt(parts[1], 10).toString();
+            // Only count expenses in current month
+            if (txYr === currentYearStr && txMo === currentMonthStr) {
+                expensesByCategory[t.category] = (expensesByCategory[t.category] || 0) + Number(t.amount);
+            }
         }
     });
 
@@ -164,7 +175,7 @@ function checkBudgetWarnings(allTransactions) {
             const overBy = spent - limit;
             const alertDiv = document.createElement('div');
             alertDiv.className = 'alert alert-danger';
-            alertDiv.innerHTML = `<i class="ph ph-warning-diamond" style="margin-right: 6px;"></i><strong>${cat} Budget Alert:</strong> You have exceeded your monthly limit by Tk ${formatMoney(overBy)}! (Spent Tk ${formatMoney(spent)} / Limit Tk ${formatMoney(limit)})`;
+            alertDiv.innerHTML = `<i class="ph ph-warning-diamond" style="margin-right: 6px;"></i><strong>${cat} Budget Alert:</strong> This month you exceeded your monthly limit by Tk ${formatMoney(overBy)}! (Spent Tk ${formatMoney(spent)} / Limit Tk ${formatMoney(limit)})`;
             alertContainer.appendChild(alertDiv);
         }
     });

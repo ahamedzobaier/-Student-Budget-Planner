@@ -46,14 +46,21 @@ function populateYearFilter() {
     }
 }
 
-// Format date string for standard table display
+// Format date string for standard table display (timezone-safe)
 function formatDateDisplay(dateStr) {
     if (!dateStr) return 'N/A';
     try {
-        const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return dateStr;
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+        const parts = dateStr.split('-');
+        if (parts.length === 3) {
+            const yr = parts[0];
+            const moIdx = parseInt(parts[1], 10) - 1;
+            const day = parseInt(parts[2], 10);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            if (moIdx >= 0 && moIdx < 12 && !isNaN(day)) {
+                return `${months[moIdx]} ${day}, ${yr}`;
+            }
+        }
+        return dateStr;
     } catch (e) {
         return dateStr;
     }
@@ -247,16 +254,4 @@ if (typeFilter && categoryFilter) {
 setupDynamicCategoryDropdown('modal-type', 'modal-category');
 initModalDate();
 populateYearFilter();
-renderTransactionsTable();
-
-// Setup dynamic category dropdown for Add Transaction modal
-setupDynamicCategoryDropdown('modal-type', 'modal-category');
-
-// Attach filter listeners
-if (typeFilter) typeFilter.addEventListener('change', renderTransactionsTable);
-if (categoryFilter) categoryFilter.addEventListener('change', renderTransactionsTable);
-if (monthFilter) monthFilter.addEventListener('change', renderTransactionsTable);
-if (searchInput) searchInput.addEventListener('input', renderTransactionsTable);
-
-// Init table
 renderTransactionsTable();
