@@ -189,7 +189,7 @@ function handleAddTransaction(type, amount, category, description, customDate) {
         }
     }
 
-    const txDate = customDate || new Date().toISOString().split('T')[0];
+    const txDate = customDate || getLocalDateString();
 
     // Build new transaction object
     const newTransaction = {
@@ -198,7 +198,7 @@ function handleAddTransaction(type, amount, category, description, customDate) {
         amount: amt,
         category: category,
         description: description,
-        date: txDate // YYYY-MM-DD format (dynamic year/month/day)
+        date: txDate // YYYY-MM-DD format (local year/month/day)
     };
 
     transactions.push(newTransaction);
@@ -213,7 +213,7 @@ function handleAddTransaction(type, amount, category, description, customDate) {
 function initModalDate() {
     const dateInput = document.getElementById('modal-date');
     if (dateInput) {
-        dateInput.value = new Date().toISOString().split('T')[0];
+        dateInput.value = getLocalDateString();
     }
 }
 
@@ -226,7 +226,7 @@ if (modalTransactionForm) {
         const category = document.getElementById('modal-category').value;
         const description = document.getElementById('modal-description').value;
         const dateInput = document.getElementById('modal-date');
-        const customDate = dateInput ? dateInput.value : new Date().toISOString().split('T')[0];
+        const customDate = dateInput ? dateInput.value : getLocalDateString();
 
         const success = handleAddTransaction(type, amount, category, description, customDate);
         if (success) {

@@ -29,6 +29,13 @@ function formatDateDisplay(dateStr) {
     } catch (e) {
         return dateStr;
     }
+// Get exact Local YYYY-MM-DD Date string (respecting user local timezone)
+function getLocalDateString() {
+    const d = new Date();
+    const yr = d.getFullYear();
+    const mo = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${yr}-${mo}-${day}`;
 }
 
 // Category Constants for Expense and Income

@@ -157,7 +157,7 @@ function deleteTransactionItem(id) {
 function initModalDate() {
     const dateInput = document.getElementById('modal-date');
     if (dateInput) {
-        dateInput.value = new Date().toISOString().split('T')[0];
+        dateInput.value = getLocalDateString();
     }
 }
 
@@ -170,7 +170,7 @@ if (modalTransactionForm) {
         const category = document.getElementById('modal-category').value;
         const description = document.getElementById('modal-description').value;
         const dateInput = document.getElementById('modal-date');
-        const customDate = dateInput ? dateInput.value : new Date().toISOString().split('T')[0];
+        const customDate = dateInput ? dateInput.value : getLocalDateString();
 
         if (isNaN(amt) || amt <= 0) {
             showToast('Please enter a valid amount', 'error');

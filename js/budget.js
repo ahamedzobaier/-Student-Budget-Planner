@@ -190,7 +190,7 @@ function saveCategoryLimit(category, limitAmount) {
 function initBudgetModalDate() {
     const dateInput = document.getElementById('modal-budget-date');
     if (dateInput) {
-        dateInput.value = new Date().toISOString().split('T')[0];
+        dateInput.value = getLocalDateString();
     }
 }
 
