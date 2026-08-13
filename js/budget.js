@@ -4,7 +4,6 @@
 // ==========================================================================
 
 const budgetTbody = document.getElementById('budget-tbody');
-const budgetSetForm = document.getElementById('budget-set-form');
 const modalBudgetForm = document.getElementById('modal-budget-form');
 
 const defaultCategories = ['Mess Bill', 'Tuition', 'Recharge', 'Other Expenses'];
@@ -104,20 +103,6 @@ function saveCategoryLimit(category, limitAmount) {
     renderBudgetLimitsTable();
     showToast(`Monthly limit for ${getHumanCategoryName(category)} updated to Tk ${formatMoney(limit)}`, 'success');
     return true;
-}
-
-// Handle Inline Budget Form Submit
-if (budgetSetForm) {
-    budgetSetForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const cat = document.getElementById('budget-cat-select').value;
-        const limit = document.getElementById('budget-limit-input').value;
-
-        const success = saveCategoryLimit(cat, limit);
-        if (success) {
-            budgetSetForm.reset();
-        }
-    });
 }
 
 // Handle Modal Budget Form Submit

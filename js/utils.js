@@ -154,21 +154,6 @@ function saveCategoryBudgets(budgets) {
     localStorage.setItem('categoryBudgets', JSON.stringify(budgets));
 }
 
-// Get saved University Semester Plan
-function getStoredSemesterPlan() {
-    return JSON.parse(localStorage.getItem('semesterPlan')) || {
-        name: '',
-        duration: 0,
-        income: 0,
-        costs: []
-    };
-}
-
-// Save University Semester Plan
-function saveSemesterPlan(plan) {
-    localStorage.setItem('semesterPlan', JSON.stringify(plan));
-}
-
 // ==========================================================================
 // EXPENSE VALIDATION RULE: Total Expenses <= Current Balance
 // ==========================================================================

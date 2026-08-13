@@ -3,7 +3,6 @@
 // Handles balance stat updates, transaction additions, and balance validations
 // ==========================================================================
 
-const transactionForm = document.getElementById('transaction-form');
 const modalTransactionForm = document.getElementById('modal-transaction-form');
 
 const currentBalanceEl = document.getElementById('current-balance');
@@ -157,22 +156,6 @@ function handleAddTransaction(type, amount, category, description) {
     return true;
 }
 
-// Handle Inline Quick Add Form Submit
-if (transactionForm) {
-    transactionForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const type = document.getElementById('type').value;
-        const amount = document.getElementById('amount').value;
-        const category = document.getElementById('category').value;
-        const description = document.getElementById('description').value;
-
-        const success = handleAddTransaction(type, amount, category, description);
-        if (success) {
-            transactionForm.reset();
-        }
-    });
-}
-
 // Handle Modal Popup Form Submit
 if (modalTransactionForm) {
     modalTransactionForm.addEventListener('submit', function(e) {
@@ -191,7 +174,6 @@ if (modalTransactionForm) {
 }
 
 // Initialize Dashboard UI & Dynamic Category Dropdowns on load
-setupDynamicCategoryDropdown('type', 'category');
 setupDynamicCategoryDropdown('modal-type', 'modal-category');
 
 updateDashboardUI();
