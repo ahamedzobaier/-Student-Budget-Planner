@@ -33,11 +33,12 @@
     </nav>
 
     <main class="dashboard-container">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 4px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 12px;">
             <div>
                 <h2>Category Budget Limits</h2>
                 <p style="color: var(--text-muted); margin-top: 2px; font-size: 0.85rem;">Set monthly spending limits per category and monitor spent vs limit in real time.</p>
-            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
                 <div>
                     <label for="budget-year-select" style="font-weight: 600; font-size: 0.85rem; margin-right: 6px;">Year:</label>
                     <select id="budget-year-select" style="padding: 6px 34px 6px 14px; font-size: 0.85rem; width: auto; min-width: 110px;">
@@ -46,6 +47,7 @@
                 </div>
                 <button class="btn-primary" onclick="openModal('set-budget-modal')"><i class="ph ph-plus-circle"></i> Set Category Budget Limit</button>
             </div>
+        </div>
 
         <!-- Budget Limits Table -->
         <section class="table-responsive">
