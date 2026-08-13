@@ -8,6 +8,29 @@ function formatMoney(amount) {
     return Number(amount || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 }
 
+// Format date string for standard display (e.g. Aug 14, 2026)
+function formatDateDisplay(dateStr) {
+    if (!dateStr) return 'N/A';
+    try {
+        const parts = dateStr.split('-');
+        if (parts.length === 3) {
+            const yr = parts[0];
+            const moIdx = parseInt(parts[1], 10) - 1;
+            const day = parseInt(parts[2], 10);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            if (moIdx >= 0 && moIdx < 12 && !isNaN(day)) {
+                return `${months[moIdx]} ${day}, ${yr}`;
+            }
+        }
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return dateStr;
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+    } catch (e) {
+        return dateStr;
+    }
+}
+
 // Category Constants for Expense and Income
 const EXPENSE_CATEGORIES = [
     { value: 'Mess Bill', label: 'Mess & Dining Bill' },

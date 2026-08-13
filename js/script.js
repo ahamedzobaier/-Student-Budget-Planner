@@ -124,11 +124,17 @@ function renderRecentTransactions(txList) {
         const sign = isInc ? '+' : '-';
         const amtClass = isInc ? 'income' : 'expense';
         const note = t.description || t.category;
+        const dateText = formatDateDisplay(t.date);
 
         item.innerHTML = `
             <div class="t-info">
                 <span class="t-desc">${note}</span>
-                <span class="t-category">${t.category}</span>
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 3px; flex-wrap: wrap;">
+                    <span class="t-category">${t.category}</span>
+                    <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500; display: inline-flex; align-items: center; gap: 3px;">
+                        <i class="ph ph-calendar-blank" style="font-size: 0.85rem;"></i>${dateText}
+                    </span>
+                </div>
             </div>
             <div class="t-right">
                 <span class="t-amount ${amtClass}">${sign}Tk ${formatMoney(t.amount)}</span>
