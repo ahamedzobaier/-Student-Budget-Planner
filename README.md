@@ -1,96 +1,107 @@
 # Student Budget Planner (BD Edition)
 
-> **Web Programming Course • Group Project • Uttara University**
-> 
-> 🌐 **Live Vercel App**: [https://budgetbd.vercel.app](https://budgetbd.vercel.app)
+> **Web Programming Course • Group Project • Uttara University**  
+> 🌐 **Live Web Application**: [https://budgetbd.vercel.app](https://budgetbd.vercel.app)
 
-A clean, responsive, client-side web application designed exclusively for Bangladesh university students. It empowers students to track daily local allowance & expenses, enforce strict balance spending validation, set monthly category budget limits, visualize full 12-month spending trends, manage routine monthly expenses side-by-side, and plan university semester academic fees.
-
----
-
-## 👥 Group Team Members & Roles
-
-- **Nasir Uddin** — *Planning & Project Coordination*
-- **Zobaiar Hasan** — *UI/UX & Logic Development*
-- **Sakib Hasan** — *Testing & Documentation*
-- **Awsaf Islam** — *Data Visualization*
-- **Maruf Ahmed Fardin** — *Frontend Engineering*
+A clean, modern, fully responsive client-side web application built for university students in Bangladesh. It simplifies personal finance by tracking daily income and local expenses, enforcing strict balance validation rules, setting monthly category spending limits, visualizing 12-month financial trends, and storing data persistent in browser `localStorage`.
 
 ---
 
-## 🌟 Key Application Features & Validation Rules
+## 👥 Project Team & Roles
 
-- **🛡️ Balance Validation Modal (`Total Expenses <= Current Balance`)**: Strictly prevents expenses from exceeding current available balance (`Total Income - Total Expenses`). Displays an interactive Insufficient Balance Warning Modal popup showing the shortage amount.
-- **🇧🇩 Unified BDT Currency Flow**: Standardized Bangladeshi Taka (`Tk`) formatting across all pages and calculations.
-- **💬 Interactive Modal Popup Forms**: Accessible, animated popup form modals for adding transactions, setting category budget limits, and adding academic costs.
-- **📝 Everyday Humanized Code Comments**: Simple, warm, easy-to-read code comments throughout all HTML, CSS, and JS files.
+| Team Member | Role & Key Responsibilities |
+| :--- | :--- |
+| **Nasir Uddin** | *Planning & Project Coordination* |
+| **Zobaiar Hasan** | *UI/UX Design & Core JavaScript Logic* |
+| **Sakib Hasan** | *Testing, QA & Technical Documentation* |
+| **Awsaf Islam** | *Data Visualization & Chart Analytics* |
+| **Maruf Ahmed Fardin** | *Frontend Engineering & Layout Styling* |
 
 ---
 
-## 🌟 5-Page Application Structure
+## 🌟 Core Features & System Rules
 
-The application features a responsive, glassmorphic floating navigation header connecting **5 core pages**:
+- **🛡️ Strict Balance Validation (`Total Expenses <= Current Balance`)**: Prevents users from logging an expense that exceeds their available net balance (`Total Income - Total Expenses`). Triggers an interactive **Insufficient Balance Warning Modal** showing exact shortage amounts.
+- **👤 Dynamic Student Profile Popover**: Interactive profile menu accessible via the top navbar avatar. Displays student details (*Name*, *University*, *Department*, *Student ID*, *Semester*) with real-time interactive edit & save functionality.
+- **🔄 Dynamic Category Dropdowns**: Modal forms dynamically switch available category options based on selected transaction type (*Income* vs *Expense*).
+- **🇧🇩 Unified BDT Currency Flow**: Standardized Bangladeshi Taka (`Tk`) currency formatting across stats, tables, limits, and charts.
+- **📊 Interactive Financial Charts**: Powered by **Chart.js** with category doughnut breakdowns and a 12-month spending trend bar chart with month filtering.
+- **💬 Glassmorphic Modal Popups**: Smooth animated popups for adding transactions, setting budget limits, and editing student profile details.
+
+---
+
+## 📱 5-Page Application Structure
+
+The application features a responsive, glassmorphic floating top navigation header connecting **5 core pages**:
 
 | Page | File | Key Features & Responsibilities |
 | :--- | :--- | :--- |
-| **01. Dashboard** | [`index.html`](file:///e:/project/Student_budget_planner/index.html) | Main hub displaying 4 summary stat cards (*Current Balance*, *Total Income*, *Total Expenses*, *Remaining Goal %*), quick **+ Add Transaction** button opening popup modal, and 5 recent transactions. |
-| **02. Transactions Log** | [`transactions.html`](file:///e:/project/Student_budget_planner/transactions.html) | Complete 12-month searchable data log. Filter by *Type*, *Category*, *Month* (Jan–Dec), or *Description Search query*. Supports instant entry deletion and modal additions. |
-| **03. Category Budget** | [`budget.html`](file:///e:/project/Student_budget_planner/budget.html) | Set and update monthly spending limits per category. Tracks spent vs. limit with visual progress bars, progress % indicators, and `OVER` status red alerts. |
-| **04. Spending Charts** | [`charts.html`](file:///e:/project/Student_budget_planner/charts.html) | Visual analytics powered by **Chart.js**. Features a Doughnut chart for Category Breakdown and a 12-Month Bar chart (`Jan`–`Dec`) for Monthly Spending Trends with a month dropdown filter. |
-| **05. Monthly View** | [`monthly.html`](file:///e:/project/Student_budget_planner/monthly.html) | 12-month side-by-side financial matrix (`Jan`–`Dec`) sectioned into *INCOME SOURCES*, *REGULAR EXPENSES*, and *NET SAVINGS & BALANCE* with sticky category column for touch scrolling. |
+| **01. Dashboard** | [`index.html`](file:///e:/project/Student_budget_planner/index.html) | Main hub displaying 4 summary stat cards (*Current Balance*, *Total Income*, *Total Expenses*, *Remaining Goal %*), Quick **+ Add Transaction** popup modal launcher, and 5 recent transactions. |
+| **02. Transactions Log** | [`transactions.html`](file:///e:/project/Student_budget_planner/transactions.html) | Searchable 12-month data log. Filter by *Type*, *Category*, *Month* (Jan–Dec), or *Description Search query*. Supports instant entry deletion. |
+| **03. Category Budget** | [`budget.html`](file:///e:/project/Student_budget_planner/budget.html) | Set and update monthly spending limits per category with visual progress bars, progress % indicators, and `OVER` status red alert banners. |
+| **04. Spending Charts** | [`charts.html`](file:///e:/project/Student_budget_planner/charts.html) | Visual analytics powered by **Chart.js**. Features a Doughnut chart for Category Breakdown and a 12-Month Bar chart (`Jan`–`Dec`) with a month dropdown filter. |
+| **05. Monthly View** | [`monthly.html`](file:///e:/project/Student_budget_planner/monthly.html) | 12-month side-by-side financial matrix (`Jan`–`Dec`) sectioned into *INCOME SOURCES*, *REGULAR EXPENSES*, and *NET SAVINGS & BALANCE* with sticky headers. |
 
 ---
 
-## 🛠️ Technology Stack & Mobile Optimization
+## 🛠️ Technology Stack
 
-- **Structure:** HTML5 Semantic Markup
-- **Styling:** Vanilla CSS3 (Glassmorphism design, CSS variables, 2x2 mobile stat grid, modal popups, sticky table columns, touch scrolling, responsive typography)
-- **Logic & Storage:** Vanilla JavaScript (ES6+), HTML5 `localStorage` JSON API
-- **Data Visualization:** Chart.js (12-month trends)
-- **Icons & Typography:** Phosphor Icons, Google Inter Font
+| Layer | Technology Used | Description |
+| :--- | :--- | :--- |
+| **Markup** | **HTML5** | Semantic, accessible web page structure |
+| **Styling** | **Vanilla CSS3** | Custom CSS Variables design system, Glassmorphism navbar, CSS Grid/Flexbox layouts, SVG chevron dropdowns, smooth micro-animations |
+| **Logic** | **Vanilla JavaScript (ES6+)** | Pure client-side application logic, event listeners, dynamic DOM manipulation |
+| **Storage** | **HTML5 Web Storage API** | Browser `localStorage` for zero-backend data persistence |
+| **Visualization** | **Chart.js (v4.x)** | Canvas-based financial charts and monthly spending analytics |
+| **Icons & Font** | **Phosphor Icons & Google Inter** | Modern icon set and clean typography |
 
 ---
 
-## 💾 Shared Data Structure (`localStorage`)
+## 💾 Local Storage Schema
 
-All application state is saved locally in the browser using structured JSON keys:
+All data persists in the browser via three `localStorage` JSON keys:
 
-### 1. `transactions`
-Array of logged transaction objects:
 ```json
+// Key: "transactions"
 [
   {
-    "id": 101,
-    "type": "income",
-    "amount": 5000,
-    "category": "Income",
-    "description": "Family Allowance",
-    "date": "2026-06-17"
+    "id": 1723594800000,
+    "type": "expense",
+    "amount": 1500,
+    "category": "Mess Bill",
+    "description": "August Dining Fee",
+    "date": "2026-08-13"
   }
 ]
-```
 
-### 2. `categoryBudgets`
-Key-value mapping of monthly limit thresholds per category:
-```json
+// Key: "categoryBudgets"
 {
-  "Mess Bill": 2000,
-  "Tuition": 3000,
-  "Recharge": 300,
-  "Other Expenses": 500
+  "Mess Bill": 2500,
+  "Tuition": 5000,
+  "Recharge": 500,
+  "Other Expenses": 1000
+}
+
+// Key: "studentProfile"
+{
+  "name": "Zobaier Hasan",
+  "university": "Uttara University",
+  "department": "Computer Science (CSE)",
+  "studentId": "2241081345",
+  "semester": "Summer 2026"
 }
 ```
 
 ---
 
-## 🚀 How to Run
+## 🚀 How to Run Locally
 
 ### Method 1: Local HTTP Server (Recommended)
-Run a simple local web server from the project directory:
+Run a local web server from the project root directory:
 ```bash
 python -m http.server 8000
 ```
-Then visit **`http://localhost:8000/`** (or `http://localhost:8000/index.html`) in your browser.
+Then visit **`http://localhost:8000/`** in your browser.
 
-### Method 2: Direct File Launch
-Double-click `index.html` in any web browser.
+### Method 2: Direct Browser Launch
+Double-click **`index.html`** to open directly in any modern web browser.
