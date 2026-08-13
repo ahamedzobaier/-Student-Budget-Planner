@@ -2,7 +2,7 @@
 
 > **Web Programming Course • Group Project • Uttara University**
 > 
-> 🌐 **Live Vercel App**: [https://budgetbd.vercel.app](https://budgetbd.vercel.app) (or [https://budgetbd.vercel.app/dashboard.html](https://budgetbd.vercel.app/dashboard.html))
+> 🌐 **Live Vercel App**: [https://budgetbd.vercel.app](https://budgetbd.vercel.app)
 
 A clean, responsive, client-side web application designed exclusively for Bangladesh university students. It empowers students to track daily local allowance & expenses, enforce strict balance spending validation, set monthly category budget limits, visualize full 12-month spending trends, manage routine monthly expenses side-by-side, and plan university semester academic fees.
 
@@ -33,7 +33,7 @@ The application features a responsive, glassmorphic floating navigation header c
 
 | Page | File | Key Features & Responsibilities |
 | :--- | :--- | :--- |
-| **01. Dashboard** | [`dashboard.html`](file:///e:/project/Student_budget_planner/dashboard.html) | Main hub displaying 4 summary stat cards (*Current Balance*, *Total Income*, *Total Expenses*, *Remaining Goal %*), quick **+ Add Transaction** button opening popup modal, and 5 recent transactions. |
+| **01. Dashboard** | [`index.html`](file:///e:/project/Student_budget_planner/index.html) | Main hub displaying 4 summary stat cards (*Current Balance*, *Total Income*, *Total Expenses*, *Remaining Goal %*), quick **+ Add Transaction** button opening popup modal, and 5 recent transactions. |
 | **02. Transactions Log** | [`transactions.html`](file:///e:/project/Student_budget_planner/transactions.html) | Complete 12-month searchable data log. Filter by *Type*, *Category*, *Month* (Jan–Dec), or *Description Search query*. Supports instant entry deletion and modal additions. |
 | **03. Category Budget** | [`budget.html`](file:///e:/project/Student_budget_planner/budget.html) | Set and update monthly spending limits per category. Tracks spent vs. limit with visual progress bars, progress % indicators, and `OVER` status red alerts. |
 | **04. Spending Charts** | [`charts.html`](file:///e:/project/Student_budget_planner/charts.html) | Visual analytics powered by **Chart.js**. Features a Doughnut chart for Category Breakdown and a 12-Month Bar chart (`Jan`–`Dec`) for Monthly Spending Trends with a month dropdown filter. |
@@ -90,7 +90,7 @@ Run a simple local web server from the project directory:
 ```bash
 python -m http.server 8000
 ```
-Then visit **`http://localhost:8000/dashboard.html`** in your browser.
+Then visit **`http://localhost:8000/`** (or `http://localhost:8000/index.html`) in your browser.
 
 ### Method 2: Direct File Launch
-Double-click `dashboard.html` in any web browser.
+Double-click `index.html` in any web browser.
