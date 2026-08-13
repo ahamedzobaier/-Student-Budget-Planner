@@ -24,7 +24,17 @@ function getHumanCategoryName(cat) {
 }
 
 // Render the Category Budget Limits Table
+const budgetMonthSelect = document.getElementById('budget-month-select');
 const budgetYearSelect = document.getElementById('budget-year-select');
+
+// Auto-select current month (e.g. August = 8) on load
+function initBudgetMonthSelect() {
+    if (!budgetMonthSelect) return;
+    if (!budgetMonthSelect.value) {
+        const currentMonth = (new Date().getMonth() + 1).toString();
+        budgetMonthSelect.value = currentMonth;
+    }
+}
 
 // Populate Year Selector for Budget Page
 function populateBudgetYearSelect() {
@@ -60,19 +70,28 @@ function populateBudgetYearSelect() {
     }
 }
 
-// Render Budget Limits Table for selected year
+// Render Budget Limits Table for selected month and year
 function renderBudgetLimitsTable() {
     const transactions = getStoredTransactions();
     const budgets = getStoredCategoryBudgets();
-    const selectedYear = budgetYearSelect ? budgetYearSelect.value : 'all';
 
-    // Calculate total spent per category for selected year
+    const currentYearStr = new Date().getFullYear().toString();
+    const currentMonthNum = (new Date().getMonth() + 1).toString();
+
+    const selectedMonth = budgetMonthSelect ? budgetMonthSelect.value : currentMonthNum;
+    const selectedYear = budgetYearSelect ? budgetYearSelect.value : currentYearStr;
+
+    // Calculate total spent per category for selected month and year
     const spentByCategory = {};
     transactions.forEach(t => {
-        if (t.type === 'expense' && t.category) {
-            if (selectedYear !== 'all') {
-                if (!t.date || !t.date.startsWith(selectedYear)) return;
-            }
+        if (t.type === 'expense' && t.category && t.date) {
+            const parts = t.date.split('-');
+            const txYr = parts[0];
+            const txMo = parseInt(parts[1], 10).toString();
+
+            if (selectedYear !== 'all' && txYr !== selectedYear) return;
+            if (selectedMonth !== 'all' && txMo !== selectedMonth) return;
+
             spentByCategory[t.category] = (spentByCategory[t.category] || 0) + Number(t.amount);
         }
     });
@@ -163,11 +182,12 @@ if (modalBudgetForm) {
     });
 }
 
-if (budgetYearSelect) {
-    budgetYearSelect.addEventListener('change', renderBudgetLimitsTable);
-}
+[budgetMonthSelect, budgetYearSelect].forEach(el => {
+    if (el) el.addEventListener('change', renderBudgetLimitsTable);
+});
 
 // Initial setup
 setupDynamicCategoryDropdown('modal-budget-cat', null);
+initBudgetMonthSelect();
 populateBudgetYearSelect();
 renderBudgetLimitsTable();
