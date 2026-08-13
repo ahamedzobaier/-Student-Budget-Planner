@@ -405,6 +405,33 @@ input:focus, select:focus {
     background-color: #f1f5f9;
 }
 
+/* Matrix Section Titles & Subtotals */
+.matrix-section-title td {
+    background-color: #334155 !important;
+    color: #f8fafc !important;
+    font-weight: 700 !important;
+    font-size: 0.8rem !important;
+    letter-spacing: 0.04em !important;
+    text-transform: uppercase !important;
+    padding: 8px 12px !important;
+}
+
+.matrix-subtotal-row {
+    font-weight: 700 !important;
+}
+
+.matrix-subtotal-row.income-subtotal td {
+    background-color: #f0fdf4 !important;
+}
+
+.matrix-subtotal-row.expense-subtotal td {
+    background-color: #fef2f2 !important;
+}
+
+.matrix-subtotal-row.balance-subtotal td {
+    background-color: #f8fafc !important;
+}
+
 /* Status Badges & Progress Bars */
 .status-badge {
     display: inline-block;
