@@ -25,18 +25,17 @@ A clean, responsive, client-side web application designed exclusively for Bangla
 
 ---
 
-## 🌟 6-Page Application Structure
+## 🌟 5-Page Application Structure
 
-The application features a responsive, glassmorphic floating navigation header connecting **6 core pages**:
+The application features a responsive, glassmorphic floating navigation header connecting **5 core pages**:
 
 | Page | File | Key Features & Responsibilities |
 | :--- | :--- | :--- |
-| **01. Dashboard** | [`index.html`](file:///e:/project/Student_budget_planner/index.html) | Main hub displaying 4 summary stat cards (*Current Balance*, *Total Income*, *Total Expenses*, *Remaining Goal %*), Quick Add form, popup transaction modal, and 5 recent transactions. |
+| **01. Dashboard** | [`dashboard.html`](file:///e:/project/Student_budget_planner/dashboard.html) | Main hub displaying 4 summary stat cards (*Current Balance*, *Total Income*, *Total Expenses*, *Remaining Goal %*), quick **+ Add Transaction** button opening popup modal, and 5 recent transactions. |
 | **02. Transactions Log** | [`transactions.html`](file:///e:/project/Student_budget_planner/transactions.html) | Complete 12-month searchable data log. Filter by *Type*, *Category*, *Month* (Jan–Dec), or *Description Search query*. Supports instant entry deletion and modal additions. |
 | **03. Category Budget** | [`budget.html`](file:///e:/project/Student_budget_planner/budget.html) | Set and update monthly spending limits per category. Tracks spent vs. limit with visual progress bars, progress % indicators, and `OVER` status red alerts. |
 | **04. Spending Charts** | [`charts.html`](file:///e:/project/Student_budget_planner/charts.html) | Visual analytics powered by **Chart.js**. Features a Doughnut chart for Category Breakdown and a 12-Month Bar chart (`Jan`–`Dec`) for Monthly Spending Trends with a month dropdown filter. |
 | **05. Monthly View** | [`monthly.html`](file:///e:/project/Student_budget_planner/monthly.html) | 12-month side-by-side financial matrix (`Jan`–`Dec`) sectioned into *INCOME SOURCES*, *REGULAR EXPENSES*, and *NET SAVINGS & BALANCE* with sticky category column for touch scrolling. |
-| **06. Semester Matrix** | [`semester.html`](file:///e:/project/Student_budget_planner/semester.html) | Dedicated University Academic Cost Planner (*Admission Fee*, *Credit/Tuition Fee*, *Exam Fee*, *Hall/Hostel Bill*, *Books & Lab Manuals*). Calculates expected vs actual variance, disposable income, and safe monthly budget. |
 
 ---
 
@@ -52,7 +51,7 @@ The application features a responsive, glassmorphic floating navigation header c
 
 ## 💾 Shared Data Structure (`localStorage`)
 
-All application state is saved locally in the browser using three structured JSON keys:
+All application state is saved locally in the browser using structured JSON keys:
 
 ### 1. `transactions`
 Array of logged transaction objects:
@@ -74,23 +73,9 @@ Key-value mapping of monthly limit thresholds per category:
 ```json
 {
   "Mess Bill": 2000,
-  "Transport": 800,
   "Tuition": 3000,
   "Recharge": 300,
   "Other Expenses": 500
-}
-```
-
-### 3. `semesterPlan`
-University academic fee plan object:
-```json
-{
-  "name": "Spring 2026",
-  "duration": 4,
-  "income": 25000,
-  "costs": [
-    { "id": 1, "name": "Admission Fee", "amount": 15000, "actualAmount": 15000 }
-  ]
 }
 ```
 
@@ -103,7 +88,7 @@ Run a simple local web server from the project directory:
 ```bash
 python -m http.server 8000
 ```
-Then visit **`http://localhost:8000/index.html`** in your browser.
+Then visit **`http://localhost:8000/dashboard.html`** in your browser.
 
 ### Method 2: Direct File Launch
-Double-click `index.html` in any web browser.
+Double-click `dashboard.html` in any web browser.
