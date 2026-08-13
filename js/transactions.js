@@ -1,4 +1,7 @@
-// Transactions Page logic (transactions.html)
+// ==========================================================================
+// TRANSACTIONS LOG CONTROLLER (transactions.js)
+// Handles searching, multi-criteria filtering, and transaction log rendering
+// ==========================================================================
 
 const typeFilter = document.getElementById('filter-type');
 const categoryFilter = document.getElementById('filter-category');
@@ -6,9 +9,11 @@ const monthFilter = document.getElementById('filter-month');
 const searchInput = document.getElementById('search-input');
 const tbody = document.getElementById('transactions-tbody');
 const summaryBadge = document.getElementById('filter-summary-badge');
+const modalTransactionForm = document.getElementById('modal-transaction-form');
 
 let transactions = getStoredTransactions();
 
+// Format date string for standard table display
 function formatDateDisplay(dateStr) {
     if (!dateStr) return 'N/A';
     try {
@@ -21,6 +26,7 @@ function formatDateDisplay(dateStr) {
     }
 }
 
+// Render the filtered transactions data table
 function renderTransactionsTable() {
     transactions = getStoredTransactions();
 
@@ -29,19 +35,14 @@ function renderTransactionsTable() {
     const selectedMonth = monthFilter ? monthFilter.value : 'all';
     const searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
+    // Apply active filters
     let filtered = transactions.filter(t => {
-        // Type Filter
         if (selectedType !== 'all' && t.type !== selectedType) return false;
-        
-        // Category Filter
         if (selectedCategory !== 'all' && t.category !== selectedCategory) return false;
-
-        // Month Filter (YYYY-MM prefix match)
         if (selectedMonth !== 'all') {
             if (!t.date || !t.date.startsWith(selectedMonth)) return false;
         }
 
-        // Search Query
         if (searchQuery) {
             const desc = (t.description || '').toLowerCase();
             const cat = (t.category || '').toLowerCase();
@@ -51,10 +52,10 @@ function renderTransactionsTable() {
         return true;
     });
 
-    // Sort newest first
+    // Sort newest transactions first
     filtered.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0) || b.id - a.id);
 
-    // Calculate Summary Totals for Filtered View
+    // Calculate totals for filtered view
     let filteredInc = 0;
     let filteredExp = 0;
     filtered.forEach(t => {
@@ -72,7 +73,7 @@ function renderTransactionsTable() {
         tbody.innerHTML = `
             <tr>
                 <td colspan="6" style="text-align: center; padding: 24px; color: var(--text-muted);">
-                    No transactions found matching the current filters.
+                    No transactions found matching the selected filters.
                 </td>
             </tr>
         `;
@@ -101,6 +102,7 @@ function renderTransactionsTable() {
     });
 }
 
+// Delete transaction item after confirmation
 function deleteTransactionItem(id) {
     if (confirm("Delete this transaction entry?")) {
         transactions = transactions.filter(t => t.id !== id);
@@ -110,11 +112,53 @@ function deleteTransactionItem(id) {
     }
 }
 
-// Event Listeners for Filter Controls
+// Handle Modal Transaction Submit on Transactions Log page
+if (modalTransactionForm) {
+    modalTransactionForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const type = document.getElementById('modal-type').value;
+        const amt = parseFloat(document.getElementById('modal-amount').value);
+        const category = document.getElementById('modal-category').value;
+        const description = document.getElementById('modal-description').value;
+
+        if (isNaN(amt) || amt <= 0) {
+            showToast('Please enter a valid amount', 'error');
+            return;
+        }
+
+        // BALANCE VALIDATION RULE: Total Expenses <= Current Balance
+        if (type === 'expense') {
+            const { currentBalance } = getCurrentFinancialSummary();
+            if (amt > currentBalance) {
+                showBalanceWarningModal(amt, currentBalance);
+                return;
+            }
+        }
+
+        const newTransaction = {
+            id: Date.now(),
+            type: type,
+            amount: amt,
+            category: category,
+            description: description,
+            date: new Date().toISOString().split('T')[0]
+        };
+
+        transactions.push(newTransaction);
+        saveTransactions(transactions);
+
+        modalTransactionForm.reset();
+        closeModal('add-transaction-modal');
+        renderTransactionsTable();
+        showToast("Transaction added successfully!", "success");
+    });
+}
+
+// Attach filter listeners
 if (typeFilter) typeFilter.addEventListener('change', renderTransactionsTable);
 if (categoryFilter) categoryFilter.addEventListener('change', renderTransactionsTable);
 if (monthFilter) monthFilter.addEventListener('change', renderTransactionsTable);
 if (searchInput) searchInput.addEventListener('input', renderTransactionsTable);
 
-// Init
+// Init table
 renderTransactionsTable();

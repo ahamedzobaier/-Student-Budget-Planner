@@ -1,4 +1,7 @@
-// University Semester Matrix page logic (semester.html)
+// ==========================================================================
+// UNIVERSITY SEMESTER MATRIX CONTROLLER (semester.js)
+// Manages semester academic setup, fixed university fees, and safe monthly budget
+// ==========================================================================
 
 const semesterForm = document.getElementById('semester-form');
 const semNameEl = document.getElementById('semester-name');
@@ -6,6 +9,7 @@ const durationEl = document.getElementById('duration');
 const totalIncomeEl = document.getElementById('total-income');
 
 const costForm = document.getElementById('cost-form');
+const modalCostForm = document.getElementById('modal-cost-form');
 const costNameEl = document.getElementById('cost-name');
 const costAmountEl = document.getElementById('cost-amount');
 const actualAmountEl = document.getElementById('actual-amount');
@@ -19,15 +23,14 @@ const sumMonthly = document.getElementById('summary-monthly');
 
 let semesterPlan = getStoredSemesterPlan();
 
+// Update University Semester Summary Header & Cost List UI
 function updateSemesterUI() {
     if (!semesterPlan) semesterPlan = getStoredSemesterPlan();
 
-    // Populate forms if data exists
     if (semNameEl) semNameEl.value = semesterPlan.name || '';
     if (durationEl) durationEl.value = semesterPlan.duration || 4;
     if (totalIncomeEl) totalIncomeEl.value = semesterPlan.income || 0;
 
-    // Render Summary Header Cards
     if (displaySemName) displaySemName.innerText = semesterPlan.name || 'Not Set';
     if (sumIncome) sumIncome.innerText = formatMoney(semesterPlan.income || 0);
 
@@ -44,7 +47,6 @@ function updateSemesterUI() {
         if (sumMonthly) sumMonthly.innerText = '0';
     }
 
-    // Render Academic Cost List
     if (!costListEl) return;
     costListEl.innerHTML = '';
 
@@ -95,6 +97,7 @@ function updateSemesterUI() {
     });
 }
 
+// Save semester setup
 function saveSemester(e) {
     e.preventDefault();
     semesterPlan.name = semNameEl.value.trim();
@@ -103,18 +106,17 @@ function saveSemester(e) {
     
     saveSemesterPlan(semesterPlan);
     updateSemesterUI();
-    showToast('University semester plan saved successfully!', 'success');
+    showToast('University semester setup saved successfully!', 'success');
 }
 
-function addCost(e) {
-    e.preventDefault();
-    const name = costNameEl.value.trim();
-    const expAmt = parseFloat(costAmountEl.value);
-    const actAmt = parseFloat(actualAmountEl.value);
+// Add cost item to semester plan
+function handleAddAcademicCost(name, expectedAmount, actualAmount) {
+    const expAmt = parseFloat(expectedAmount);
+    const actAmt = parseFloat(actualAmount);
 
     if (!name || isNaN(expAmt) || expAmt < 0) {
-        showToast('Please enter a cost name and positive expected amount', 'error');
-        return;
+        showToast('Please enter a cost name and expected amount', 'error');
+        return false;
     }
 
     const newCost = {
@@ -128,14 +130,12 @@ function addCost(e) {
     semesterPlan.costs.push(newCost);
     saveSemesterPlan(semesterPlan);
     
-    costNameEl.value = '';
-    costAmountEl.value = '';
-    actualAmountEl.value = '';
-    
     updateSemesterUI();
     showToast('Academic cost added to matrix', 'success');
+    return true;
 }
 
+// Remove cost item
 function removeCost(id) {
     semesterPlan.costs = (semesterPlan.costs || []).filter(c => c.id !== id);
     saveSemesterPlan(semesterPlan);
@@ -143,8 +143,40 @@ function removeCost(id) {
     showToast('Academic cost removed', 'info');
 }
 
+// Handle Inline Form Submit
+if (costForm) {
+    costForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = costNameEl.value.trim();
+        const expAmt = costAmountEl.value;
+        const actAmt = actualAmountEl.value;
+
+        const success = handleAddAcademicCost(name, expAmt, actAmt);
+        if (success) {
+            costNameEl.value = '';
+            costAmountEl.value = '';
+            actualAmountEl.value = '';
+        }
+    });
+}
+
+// Handle Modal Popup Form Submit
+if (modalCostForm) {
+    modalCostForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('modal-cost-name').value.trim();
+        const expAmt = document.getElementById('modal-cost-amount').value;
+        const actAmt = document.getElementById('modal-actual-amount').value;
+
+        const success = handleAddAcademicCost(name, expAmt, actAmt);
+        if (success) {
+            modalCostForm.reset();
+            closeModal('add-cost-modal');
+        }
+    });
+}
+
 if (semesterForm) semesterForm.addEventListener('submit', saveSemester);
-if (costForm) costForm.addEventListener('submit', addCost);
 
 // Init UI
 updateSemesterUI();

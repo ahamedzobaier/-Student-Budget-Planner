@@ -1,101 +1,135 @@
-// Category Budget page logic (budget.html)
+// ==========================================================================
+// CATEGORY BUDGET LIMITS CONTROLLER (budget.js)
+// Manages category spending limits, spent calculations, and progress indicators
+// ==========================================================================
 
 const budgetTbody = document.getElementById('budget-tbody');
-const budgetForm = document.getElementById('budget-set-form');
-const catSelect = document.getElementById('budget-cat-select');
-const limitInput = document.getElementById('budget-limit-input');
+const budgetSetForm = document.getElementById('budget-set-form');
+const modalBudgetForm = document.getElementById('modal-budget-form');
 
 const defaultCategories = ['Mess Bill', 'Transport', 'Tuition', 'Recharge', 'Other Expenses'];
 
-function renderBudgetTable() {
+const categoryHumanNames = {
+    'Mess Bill': 'Mess & Dining Bill',
+    'Transport': 'Transport & Rickshaw',
+    'Tuition': 'University Tuition & Fees',
+    'Recharge': 'Mobile Recharge & Data',
+    'Other Expenses': 'Other Daily Expenses'
+};
+
+function getHumanCategoryName(cat) {
+    return categoryHumanNames[cat] || cat;
+}
+
+// Render the Category Budget Limits Table
+function renderBudgetLimitsTable() {
     const transactions = getStoredTransactions();
     const budgets = getStoredCategoryBudgets();
 
-    // Sum expenses per category for latest month (June 2026 / current month)
-    const spentPerCategory = {};
-    
-    // Find latest month prefix in transactions or default to 2026-06
-    let latestMonth = '2026-06';
-    const dates = transactions.map(t => t.date).filter(Boolean).sort().reverse();
-    if (dates.length > 0) {
-        latestMonth = dates[0].substring(0, 7);
-    }
-
+    // Calculate total spent per expense category
+    const spentByCategory = {};
     transactions.forEach(t => {
-        if (t.type === 'expense' && t.date && t.date.startsWith(latestMonth)) {
-            spentPerCategory[t.category] = (spentPerCategory[t.category] || 0) + Number(t.amount);
+        if (t.type === 'expense') {
+            spentByCategory[t.category] = (spentByCategory[t.category] || 0) + Number(t.amount);
         }
     });
 
+    if (!budgetTbody) return;
     budgetTbody.innerHTML = '';
 
-    // Merge default categories and any extra custom categories in budgets or transactions
-    const allCategories = Array.from(new Set([...defaultCategories, ...Object.keys(budgets)]));
-
-    allCategories.forEach(cat => {
+    defaultCategories.forEach(cat => {
         const limit = Number(budgets[cat] || 0);
-        const spent = Number(spentPerCategory[cat] || 0);
-        const remaining = Math.max(0, limit - spent);
+        const spent = Number(spentByCategory[cat] || 0);
+        const remaining = limit > 0 ? limit - spent : 0;
         
-        let pct = 0;
+        let percent = 0;
         if (limit > 0) {
-            pct = Math.round((spent / limit) * 100);
+            percent = Math.min(100, Math.round((spent / limit) * 100));
         }
 
-        const isOver = limit > 0 && spent > limit;
-        const statusBadge = isOver
-            ? `<span class="status-badge status-over">OVER</span>`
-            : `<span class="status-badge status-ok">OK</span>`;
-        
-        const progressColor = isOver ? 'var(--red)' : (pct >= 75 ? '#f59e0b' : 'var(--green)');
+        let badgeClass = 'status-ok';
+        let badgeText = 'Within Budget';
+        let barColor = 'var(--green)';
+
+        if (limit === 0) {
+            badgeClass = 'status-pending';
+            badgeText = 'No Limit Set';
+            barColor = '#94a3b8';
+        } else if (spent > limit) {
+            badgeClass = 'status-over';
+            badgeText = 'Over Limit!';
+            barColor = 'var(--red)';
+        } else if (percent >= 85) {
+            badgeClass = 'status-pending';
+            badgeText = 'Near Limit';
+            barColor = 'var(--amber)';
+        }
 
         const tr = document.createElement('tr');
-        if (isOver) {
-            tr.style.backgroundColor = '#fff1f2'; // Red tint alert for over budget
-        }
-
         tr.innerHTML = `
-            <td><strong>${cat}</strong></td>
-            <td>Tk ${formatMoney(limit)}</td>
-            <td class="${spent > 0 ? 'text-red' : ''}">Tk ${formatMoney(spent)}</td>
-            <td>Tk ${formatMoney(remaining)}</td>
+            <td><strong>${getHumanCategoryName(cat)}</strong></td>
+            <td>${limit > 0 ? 'Tk ' + formatMoney(limit) : '<em>Not set</em>'}</td>
+            <td class="text-red">Tk ${formatMoney(spent)}</td>
+            <td style="font-weight: 600;">${limit > 0 ? 'Tk ' + formatMoney(remaining) : '-'}</td>
             <td>
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <div class="table-progress-bar">
-                        <div class="table-progress-fill" style="width: ${Math.min(100, pct)}%; background-color: ${progressColor};"></div>
+                        <div class="table-progress-fill" style="width: ${percent}%; background-color: ${barColor};"></div>
                     </div>
-                    <span style="font-size: 0.8rem; font-weight: 600;">${pct}%</span>
+                    <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">${percent}%</span>
                 </div>
             </td>
-            <td>${statusBadge}</td>
+            <td><span class="status-badge ${badgeClass}">${badgeText}</span></td>
         `;
-
         budgetTbody.appendChild(tr);
     });
 }
 
-function setBudgetLimit(e) {
-    e.preventDefault();
-    const cat = catSelect.value;
-    const limit = parseFloat(limitInput.value);
-
+// Save budget limit for a category
+function saveCategoryLimit(category, limitAmount) {
+    const limit = parseFloat(limitAmount);
     if (isNaN(limit) || limit <= 0) {
-        showToast('Please enter a valid positive limit', 'error');
-        return;
+        showToast('Please enter a valid monthly limit amount', 'error');
+        return false;
     }
 
     const budgets = getStoredCategoryBudgets();
-    budgets[cat] = limit;
+    budgets[category] = limit;
     saveCategoryBudgets(budgets);
 
-    limitInput.value = '';
-    renderBudgetTable();
-    showToast(`Monthly limit for ${cat} updated to Tk ${formatMoney(limit)}`, 'success');
+    renderBudgetLimitsTable();
+    showToast(`Monthly limit for ${getHumanCategoryName(category)} updated to Tk ${formatMoney(limit)}`, 'success');
+    return true;
 }
 
-if (budgetForm) {
-    budgetForm.addEventListener('submit', setBudgetLimit);
+// Handle Inline Budget Form Submit
+if (budgetSetForm) {
+    budgetSetForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const cat = document.getElementById('budget-cat-select').value;
+        const limit = document.getElementById('budget-limit-input').value;
+
+        const success = saveCategoryLimit(cat, limit);
+        if (success) {
+            budgetSetForm.reset();
+        }
+    });
 }
 
-// Init
-renderBudgetTable();
+// Handle Modal Budget Form Submit
+if (modalBudgetForm) {
+    modalBudgetForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const cat = document.getElementById('modal-budget-cat').value;
+        const limit = document.getElementById('modal-budget-limit').value;
+
+        const success = saveCategoryLimit(cat, limit);
+        if (success) {
+            modalBudgetForm.reset();
+            closeModal('set-budget-modal');
+        }
+    });
+}
+
+// Init table
+renderBudgetLimitsTable();

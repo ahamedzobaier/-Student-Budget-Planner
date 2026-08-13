@@ -1,9 +1,13 @@
-// Charts Page logic (charts.html)
+// ==========================================================================
+// SPENDING CHARTS CONTROLLER (charts.js)
+// Renders Category Doughnut Chart and 12-Month Spending Trend Bar Chart
+// ==========================================================================
 
 const monthSelect = document.getElementById('chart-month-select');
 let pieChartInstance = null;
 let trendChartInstance = null;
 
+// Palette for Category Doughnut Chart slices
 const colorPalette = [
     '#1e3a8a', // Dark Navy
     '#d97706', // Gold / Amber
@@ -14,11 +18,12 @@ const colorPalette = [
     '#ec4899'  // Pink
 ];
 
+// Main function to draw and refresh all Chart.js visualizations
 function renderCharts() {
     const transactions = getStoredTransactions();
     const selectedMonth = monthSelect ? monthSelect.value : 'all';
 
-    // Filter expenses for Pie Chart
+    // 1. Filter expense transactions
     const expenses = transactions.filter(t => t.type === 'expense');
     
     let filteredExpenses = expenses;
@@ -35,7 +40,7 @@ function renderCharts() {
     const pieLabels = Object.keys(categoryTotals);
     const pieData = Object.values(categoryTotals);
 
-    // 1. Render Pie / Doughnut Chart
+    // Render Doughnut Pie Chart
     const pieCanvas = document.getElementById('categoryPieChart');
     if (pieCanvas) {
         if (pieChartInstance) pieChartInstance.destroy();
@@ -128,9 +133,10 @@ function renderCharts() {
     }
 }
 
+// Re-render charts whenever user changes the month select dropdown
 if (monthSelect) {
     monthSelect.addEventListener('change', renderCharts);
 }
 
-// Init
+// Initial draw on page load
 renderCharts();

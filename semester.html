@@ -55,21 +55,24 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="total-income">Total Expected Income / Support (Tk)</label>
+                        <label for="total-income">Total Expected Semester Income / Support (Tk)</label>
                         <input type="number" id="total-income" placeholder="Family support + stipends for whole semester" required min="0">
                     </div>
 
-                    <button type="submit" class="btn-primary">Save Semester Plan</button>
+                    <button type="submit" class="btn-primary">Save Semester Setup</button>
                 </form>
             </section>
 
             <!-- Fixed University Costs Matrix Form & List -->
             <section class="card">
-                <h3>University Fixed Costs Matrix</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3>University Fixed Costs Matrix</h3>
+                    <button class="btn-primary" onclick="openModal('add-cost-modal')" style="padding: 6px 12px; font-size: 0.8rem;"><i class="ph ph-plus"></i> Popup Form</button>
+                </div>
                 <form id="cost-form" class="transaction-form">
                     <div class="form-group">
                         <label for="cost-name">Cost Name</label>
-                        <input type="text" id="cost-name" placeholder="e.g., Admission Fee / Credit Fee" required>
+                        <input type="text" id="cost-name" placeholder="e.g., Credit Fee / Lab Fee" required>
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                         <div class="form-group">
@@ -114,6 +117,36 @@
             </div>
         </section>
     </main>
+
+    <!-- Modal Popup Form for Adding Academic Cost -->
+    <div id="add-cost-modal" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="ph ph-graduation-cap"></i> Add University Academic Cost</h3>
+                <button class="modal-close-btn" onclick="closeModal('add-cost-modal')">&times;</button>
+            </div>
+            <form id="modal-cost-form" class="transaction-form">
+                <div class="form-group">
+                    <label for="modal-cost-name">Cost Name</label>
+                    <input type="text" id="modal-cost-name" placeholder="e.g., Semester Exam Fee" required>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="form-group">
+                        <label for="modal-cost-amount">Expected (Tk)</label>
+                        <input type="number" id="modal-cost-amount" placeholder="e.g., 3000" required min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-actual-amount">Actual (Tk)</label>
+                        <input type="number" id="modal-actual-amount" placeholder="e.g., 3000" required min="0">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('add-cost-modal')">Cancel</button>
+                    <button type="submit" class="btn-primary">+ Save Academic Cost</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <footer style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.825rem; margin-top: 36px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; gap: 10px;">
         <p>&copy; 2026 Student Budget Planner BD. Web Programming Group Project - Uttara University.</p>

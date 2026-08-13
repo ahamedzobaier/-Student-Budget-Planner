@@ -1,166 +1,194 @@
-// Dashboard logic (index.html)
+// ==========================================================================
+// DASHBOARD CONTROLLER (script.js)
+// Handles balance stat updates, transaction additions, and balance validations
+// ==========================================================================
 
-const balanceEl = document.getElementById('current-balance');
-const incomeEl = document.getElementById('total-income');
-const expenseEl = document.getElementById('total-expense');
-const goalEl = document.getElementById('remaining-goal');
+const transactionForm = document.getElementById('transaction-form');
+const modalTransactionForm = document.getElementById('modal-transaction-form');
 
-const formEl = document.getElementById('transaction-form');
-const typeEl = document.getElementById('type');
-const amountEl = document.getElementById('amount');
-const categoryEl = document.getElementById('category');
-const descriptionEl = document.getElementById('description');
+const currentBalanceEl = document.getElementById('current-balance');
+const totalIncomeEl = document.getElementById('total-income');
+const totalExpenseEl = document.getElementById('total-expense');
+const remainingGoalEl = document.getElementById('remaining-goal');
 const recentListEl = document.getElementById('recent-transaction-list');
 const alertContainer = document.getElementById('budget-alert-container');
 
+// Load stored transactions and budgets from localStorage
 let transactions = getStoredTransactions();
+let categoryBudgets = getStoredCategoryBudgets();
 
-function updateDashboard() {
+// Update all stat cards, alert banners, and recent transaction list
+function updateDashboardUI() {
     transactions = getStoredTransactions();
-    
-    let totalIncome = 0;
-    let totalExpense = 0;
+    categoryBudgets = getStoredCategoryBudgets();
+
+    let incomeTotal = 0;
+    let expenseTotal = 0;
 
     transactions.forEach(t => {
+        const amt = Number(t.amount || 0);
         if (t.type === 'income') {
-            totalIncome += Number(t.amount);
-        } else {
-            totalExpense += Number(t.amount);
+            incomeTotal += amt;
+        } else if (t.type === 'expense') {
+            expenseTotal += amt;
         }
     });
 
-    const currentBalance = totalIncome - totalExpense;
-    
-    // Remaining goal / budget progress calculation (% of income remaining)
-    let remainingGoalPct = 100;
-    if (totalIncome > 0) {
-        const pct = ((totalIncome - totalExpense) / totalIncome) * 100;
-        remainingGoalPct = Math.max(0, Math.round(pct));
-    } else if (totalExpense > 0) {
-        remainingGoalPct = 0;
-    }
+    const netBalance = incomeTotal - expenseTotal;
 
-    if (balanceEl) balanceEl.innerText = formatMoney(currentBalance);
-    if (incomeEl) incomeEl.innerText = formatMoney(totalIncome);
-    if (expenseEl) expenseEl.innerText = formatMoney(totalExpense);
-    if (goalEl) goalEl.innerText = remainingGoalPct;
+    // Update Top 4 Stat Cards
+    if (currentBalanceEl) currentBalanceEl.innerText = formatMoney(netBalance);
+    if (totalIncomeEl) totalIncomeEl.innerText = formatMoney(incomeTotal);
+    if (totalExpenseEl) totalExpenseEl.innerText = formatMoney(expenseTotal);
 
-    checkBudgetAlerts(totalIncome, totalExpense);
-    renderRecentTransactions();
-}
-
-function checkBudgetAlerts(income, expense) {
-    if (!alertContainer) return;
-    alertContainer.innerHTML = '';
-    
-    if (income === 0 && expense > 0) {
-        showAlert('Warning: You have logged expenses but no income!', 'alert-warning');
-        return;
-    }
-    
-    if (income > 0) {
-        const percentage = (expense / income) * 100;
-        if (percentage >= 100) {
-            showAlert('Critical Alert: Expenses have exceeded total logged income!', 'alert-danger');
-        } else if (percentage >= 80) {
-            showAlert(`Warning: You have spent ${percentage.toFixed(1)}% of your income. Pace yourself!`, 'alert-warning');
+    // Calculate remaining budget percentage
+    if (remainingGoalEl) {
+        if (incomeTotal > 0) {
+            const percentRemaining = Math.max(0, Math.round((netBalance / incomeTotal) * 100));
+            remainingGoalEl.innerText = percentRemaining;
+        } else {
+            remainingGoalEl.innerText = netBalance <= 0 ? 0 : 100;
         }
     }
+
+    // Render Recent 5 Transactions
+    renderRecentTransactions();
+
+    // Check Category Spending Limits for Warning Banners
+    checkBudgetWarnings(transactions);
 }
 
-function showAlert(message, typeClass) {
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert ${typeClass}`;
-    alertDiv.innerHTML = `<strong>Alert:</strong> ${message}`;
-    alertContainer.appendChild(alertDiv);
-}
-
+// Render the 5 most recent transactions on the dashboard
 function renderRecentTransactions() {
     if (!recentListEl) return;
     recentListEl.innerHTML = '';
 
     if (transactions.length === 0) {
-        recentListEl.innerHTML = '<div class="empty-state">No transactions yet. Add one above!</div>';
+        recentListEl.innerHTML = '<div class="empty-state">No transactions logged yet. Add your first income or expense above!</div>';
         return;
     }
 
-    // Sort newest first by date or id, take top 5
-    const sorted = [...transactions].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0) || b.id - a.id).slice(0, 5);
+    // Sort newest first
+    const sorted = [...transactions].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0) || b.id - a.id);
+    const recent = sorted.slice(0, 5);
 
-    sorted.forEach(t => {
-        const sign = t.type === 'income' ? '+' : '-';
-        const typeClass = t.type === 'income' ? 'income' : 'expense';
-        const descText = t.description || t.category;
-
+    recent.forEach(t => {
         const item = document.createElement('div');
-        item.classList.add('transaction-item');
+        item.className = 'transaction-item';
+
+        const isInc = t.type === 'income';
+        const sign = isInc ? '+' : '-';
+        const amtClass = isInc ? 'income' : 'expense';
+        const note = t.description || t.category;
+
         item.innerHTML = `
             <div class="t-info">
-                <span class="t-desc">${descText}</span>
+                <span class="t-desc">${note}</span>
                 <span class="t-category">${t.category}</span>
             </div>
             <div class="t-right">
-                <span class="t-amount ${typeClass}">${sign}Tk ${formatMoney(t.amount)}</span>
+                <span class="t-amount ${amtClass}">${sign}Tk ${formatMoney(t.amount)}</span>
             </div>
         `;
         recentListEl.appendChild(item);
     });
 }
 
-function addTransaction(e) {
-    e.preventDefault();
+// Check category spending limits and show warning banners if over limit
+function checkBudgetWarnings(allTransactions) {
+    if (!alertContainer) return;
+    alertContainer.innerHTML = '';
 
-    const amt = parseFloat(amountEl.value);
+    const expensesByCategory = {};
+    allTransactions.forEach(t => {
+        if (t.type === 'expense') {
+            expensesByCategory[t.category] = (expensesByCategory[t.category] || 0) + Number(t.amount);
+        }
+    });
+
+    Object.keys(categoryBudgets).forEach(cat => {
+        const limit = Number(categoryBudgets[cat] || 0);
+        const spent = Number(expensesByCategory[cat] || 0);
+
+        if (limit > 0 && spent > limit) {
+            const overBy = spent - limit;
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger';
+            alertDiv.innerHTML = `<i class="ph ph-warning-diamond" style="margin-right: 6px;"></i><strong>${cat} Budget Alert:</strong> You have exceeded your monthly limit by Tk ${formatMoney(overBy)}! (Spent Tk ${formatMoney(spent)} / Limit Tk ${formatMoney(limit)})`;
+            alertContainer.appendChild(alertDiv);
+        }
+    });
+}
+
+// Add transaction with strict Total Expenses <= Current Balance validation rule
+function handleAddTransaction(type, amount, category, description) {
+    const amt = parseFloat(amount);
+
     if (isNaN(amt) || amt <= 0) {
-        showToast('Please enter a valid positive amount', 'error');
-        return;
+        showToast('Please enter a valid amount greater than 0', 'error');
+        return false;
     }
 
-    const today = new Date().toISOString().split('T')[0];
+    // STRICT VALIDATION RULE: Total Expenses cannot exceed Current Balance
+    if (type === 'expense') {
+        const { currentBalance } = getCurrentFinancialSummary();
+        if (amt > currentBalance) {
+            // Show friendly Balance Warning Modal Popup and block saving invalid transaction
+            showBalanceWarningModal(amt, currentBalance);
+            return false;
+        }
+    }
+
+    // Build new transaction object
     const newTransaction = {
         id: Date.now(),
-        type: typeEl.value,
+        type: type,
         amount: amt,
-        category: categoryEl.value,
-        description: descriptionEl.value.trim(),
-        date: today
+        category: category,
+        description: description,
+        date: new Date().toISOString().split('T')[0] // YYYY-MM-DD format
     };
 
     transactions.push(newTransaction);
     saveTransactions(transactions);
 
-    amountEl.value = '';
-    descriptionEl.value = '';
-    
-    updateDashboard();
-    showToast('Transaction added successfully!', 'success');
+    updateDashboardUI();
+    showToast(`${type === 'income' ? 'Income' : 'Expense'} added successfully!`, 'success');
+    return true;
 }
 
-// Category option toggle based on Type select
-if (typeEl) {
-    typeEl.addEventListener('change', () => {
-        if (typeEl.value === 'income') {
-            categoryEl.innerHTML = `
-                <option value="Income">Income (Allowance / Stipend)</option>
-                <option value="Tutoring">Part-time Tutoring</option>
-                <option value="Scholarship">Scholarship</option>
-                <option value="Other">Other Income</option>
-            `;
-        } else {
-            categoryEl.innerHTML = `
-                <option value="Mess Bill">Mess Bill</option>
-                <option value="Transport">Transport</option>
-                <option value="Recharge">Recharge</option>
-                <option value="Tuition">Tuition</option>
-                <option value="Other Expenses">Other Expenses</option>
-            `;
+// Handle Inline Quick Add Form Submit
+if (transactionForm) {
+    transactionForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const type = document.getElementById('type').value;
+        const amount = document.getElementById('amount').value;
+        const category = document.getElementById('category').value;
+        const description = document.getElementById('description').value;
+
+        const success = handleAddTransaction(type, amount, category, description);
+        if (success) {
+            transactionForm.reset();
         }
     });
 }
 
-if (formEl) {
-    formEl.addEventListener('submit', addTransaction);
+// Handle Modal Popup Form Submit
+if (modalTransactionForm) {
+    modalTransactionForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const type = document.getElementById('modal-type').value;
+        const amount = document.getElementById('modal-amount').value;
+        const category = document.getElementById('modal-category').value;
+        const description = document.getElementById('modal-description').value;
+
+        const success = handleAddTransaction(type, amount, category, description);
+        if (success) {
+            modalTransactionForm.reset();
+            closeModal('add-transaction-modal');
+        }
+    });
 }
 
-// Init Dashboard
-updateDashboard();
+// Initialize Dashboard UI on load
+updateDashboardUI();
