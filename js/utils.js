@@ -252,7 +252,33 @@ function closeModal(modalId) {
     }
 }
 
-// Show Interactive Demo Student Profile Modal Popover
+// Get saved Student Profile details from localStorage
+function getStoredStudentProfile() {
+    return JSON.parse(localStorage.getItem('studentProfile')) || {
+        name: 'Student Demo Profile',
+        university: 'Uttara University',
+        department: 'Computer Science (CSE)',
+        studentId: 'UG-2026-BD89',
+        semester: '6th Semester'
+    };
+}
+
+// Save Student Profile details to localStorage
+function saveStudentProfile(profile) {
+    localStorage.setItem('studentProfile', JSON.stringify(profile));
+    updateAvatarInitial();
+}
+
+// Update avatar initial letter across the page
+function updateAvatarInitial() {
+    const profile = getStoredStudentProfile();
+    const initial = profile.name ? profile.name.charAt(0).toUpperCase() : 'S';
+    document.querySelectorAll('.avatar').forEach(el => {
+        el.innerText = initial;
+    });
+}
+
+// Show Interactive Demo Student Profile Modal Popover (with View & Edit modes)
 function openProfileModal() {
     let modal = document.getElementById('demo-profile-modal');
     if (!modal) {
@@ -270,15 +296,26 @@ function openProfileModal() {
         document.body.appendChild(modal);
     }
 
+    renderProfileViewMode();
+    openModal('demo-profile-modal');
+}
+
+// Render View Mode inside Profile Modal
+function renderProfileViewMode() {
+    const modal = document.getElementById('demo-profile-modal');
+    if (!modal) return;
+
+    const profile = getStoredStudentProfile();
     const { totalIncome, totalExpense, currentBalance } = getCurrentFinancialSummary();
+    const initial = profile.name ? profile.name.charAt(0).toUpperCase() : 'S';
 
     modal.innerHTML = `
         <div class="modal-card profile-popover-card">
             <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 14px;">
                 <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #1e293b 0%, #475569 100%); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.15rem; box-shadow: var(--shadow-md); border: 2px solid #6366f1;">S</div>
+                    <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #1e293b 0%, #475569 100%); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.15rem; box-shadow: var(--shadow-md); border: 2px solid #6366f1;">${initial}</div>
                     <div>
-                        <h3 style="font-size: 1.05rem; color: var(--text-main); font-weight: 700;">Student Demo Profile</h3>
+                        <h3 style="font-size: 1.05rem; color: var(--text-main); font-weight: 700;">${profile.name}</h3>
                         <span style="font-size: 0.76rem; color: var(--green); font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
                             <span style="width: 7px; height: 7px; background-color: var(--green); border-radius: 50%; display: inline-block;"></span> Active Account
                         </span>
@@ -291,19 +328,19 @@ function openProfileModal() {
                 <div style="background-color: #f8fafc; padding: 12px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 6px;">
                     <div style="display: flex; justify-content: space-between; font-size: 0.825rem;">
                         <span style="color: var(--text-muted);">University:</span>
-                        <strong style="color: var(--text-main);">Uttara University</strong>
+                        <strong style="color: var(--text-main);">${profile.university}</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 0.825rem;">
                         <span style="color: var(--text-muted);">Department:</span>
-                        <strong style="color: var(--text-main);">Computer Science (CSE)</strong>
+                        <strong style="color: var(--text-main);">${profile.department}</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 0.825rem;">
                         <span style="color: var(--text-muted);">Student ID:</span>
-                        <strong style="color: var(--text-main);">UG-2026-BD89</strong>
+                        <strong style="color: var(--text-main);">${profile.studentId}</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 0.825rem;">
                         <span style="color: var(--text-muted);">Semester:</span>
-                        <strong style="color: var(--text-main);">6th Semester</strong>
+                        <strong style="color: var(--text-main);">${profile.semester}</strong>
                     </div>
                 </div>
 
@@ -324,17 +361,82 @@ function openProfileModal() {
                 </div>
             </div>
 
-            <div class="modal-footer" style="margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--border-color);">
-                <button class="btn-secondary" onclick="closeModal('demo-profile-modal')" style="width: 100%; padding: 8px;">Close Profile</button>
+            <div class="modal-footer" style="margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--border-color); display: flex; gap: 8px;">
+                <button class="btn-primary" onclick="renderProfileEditMode()" style="flex: 1; padding: 8px; font-size: 0.85rem;"><i class="ph ph-pencil-simple"></i> Edit Profile</button>
+                <button class="btn-secondary" onclick="closeModal('demo-profile-modal')" style="flex: 1; padding: 8px; font-size: 0.85rem;">Close</button>
             </div>
         </div>
     `;
-
-    openModal('demo-profile-modal');
 }
 
-// Auto-attach avatar click handlers when DOM loads
+// Render Edit Mode inside Profile Modal
+function renderProfileEditMode() {
+    const modal = document.getElementById('demo-profile-modal');
+    if (!modal) return;
+
+    const profile = getStoredStudentProfile();
+
+    modal.innerHTML = `
+        <div class="modal-card profile-popover-card">
+            <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 12px;">
+                <h3 style="font-size: 1.05rem; color: var(--text-main); font-weight: 700;"><i class="ph ph-pencil-simple" style="color: #6366f1;"></i> Edit Student Details</h3>
+                <button class="modal-close-btn" onclick="renderProfileViewMode()">&times;</button>
+            </div>
+
+            <form id="edit-profile-form" style="display: flex; flex-direction: column; gap: 10px;">
+                <div class="form-group">
+                    <label style="font-size: 0.775rem; font-weight: 600;">Student Name</label>
+                    <input type="text" id="prof-name" value="${profile.name}" required style="padding: 7px 10px; font-size: 0.85rem;">
+                </div>
+                <div class="form-group">
+                    <label style="font-size: 0.775rem; font-weight: 600;">University</label>
+                    <input type="text" id="prof-uni" value="${profile.university}" required style="padding: 7px 10px; font-size: 0.85rem;">
+                </div>
+                <div class="form-group">
+                    <label style="font-size: 0.775rem; font-weight: 600;">Department</label>
+                    <input type="text" id="prof-dept" value="${profile.department}" required style="padding: 7px 10px; font-size: 0.85rem;">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <div class="form-group">
+                        <label style="font-size: 0.775rem; font-weight: 600;">Student ID</label>
+                        <input type="text" id="prof-id" value="${profile.studentId}" required style="padding: 7px 10px; font-size: 0.85rem;">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size: 0.775rem; font-weight: 600;">Semester</label>
+                        <input type="text" id="prof-sem" value="${profile.semester}" required style="padding: 7px 10px; font-size: 0.85rem;">
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 8px; margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--border-color);">
+                    <button type="button" class="btn-secondary" onclick="renderProfileViewMode()" style="flex: 1; padding: 8px; font-size: 0.85rem;">Cancel</button>
+                    <button type="submit" class="btn-primary" style="flex: 1; padding: 8px; font-size: 0.85rem;">Save Profile</button>
+                </div>
+            </form>
+        </div>
+    `;
+
+    const editForm = document.getElementById('edit-profile-form');
+    if (editForm) {
+        editForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const updatedProfile = {
+                name: document.getElementById('prof-name').value.trim(),
+                university: document.getElementById('prof-uni').value.trim(),
+                department: document.getElementById('prof-dept').value.trim(),
+                studentId: document.getElementById('prof-id').value.trim(),
+                semester: document.getElementById('prof-sem').value.trim()
+            };
+
+            saveStudentProfile(updatedProfile);
+            showToast('Student profile details updated successfully!', 'success');
+            renderProfileViewMode();
+        });
+    }
+}
+
+// Auto-attach avatar click handlers and sync avatar letter when DOM loads
 document.addEventListener('DOMContentLoaded', function() {
+    updateAvatarInitial();
     const avatarEls = document.querySelectorAll('.avatar, .user-profile');
     avatarEls.forEach(el => {
         el.style.cursor = 'pointer';
