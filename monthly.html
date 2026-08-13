@@ -33,25 +33,47 @@
     </nav>
 
     <main class="dashboard-container">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+
+        <!-- Page Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;">
             <div>
                 <h2>12-Month Financial Summary Matrix</h2>
-                <p style="color: var(--text-muted); margin-top: 2px; font-size: 0.85rem;">A complete side-by-side breakdown of your monthly income sources, regular living expenses, and net savings balance across all 12 months.</p>
+                <p style="color: var(--text-muted); margin-top: 2px; font-size: 0.85rem;">Complete side-by-side breakdown of monthly income, expenses, and net savings across all 12 months.</p>
             </div>
-            <div>
-                <label for="monthly-year-select" style="font-weight: 600; font-size: 0.85rem; margin-right: 6px;">Select Year:</label>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <label for="monthly-year-select" style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted);">Year:</label>
                 <select id="monthly-year-select" style="padding: 6px 34px 6px 14px; font-size: 0.85rem; width: auto; min-width: 110px;">
                     <!-- Dynamically populated by JS -->
                 </select>
             </div>
         </div>
 
+        <!-- Annual Summary Stat Cards -->
+        <section class="dashboard-stats-grid" id="monthly-summary-cards" style="margin-bottom: 20px;">
+            <div class="stat-card card-income">
+                <span class="stat-label"><i class="ph ph-trend-up" style="margin-right: 4px;"></i>Annual Income</span>
+                <div class="stat-value">Tk <span id="annual-income-total">0</span></div>
+            </div>
+            <div class="stat-card card-expense">
+                <span class="stat-label"><i class="ph ph-trend-down" style="margin-right: 4px;"></i>Annual Expenses</span>
+                <div class="stat-value">Tk <span id="annual-expense-total">0</span></div>
+            </div>
+            <div class="stat-card card-balance">
+                <span class="stat-label"><i class="ph ph-piggy-bank" style="margin-right: 4px;"></i>Net Savings</span>
+                <div class="stat-value">Tk <span id="annual-net-savings">0</span></div>
+            </div>
+            <div class="stat-card card-goal">
+                <span class="stat-label"><i class="ph ph-percent" style="margin-right: 4px;"></i>Savings Rate</span>
+                <div class="stat-value"><span id="annual-savings-rate">0</span>%</div>
+            </div>
+        </section>
+
         <!-- 12-Month Matrix Data Table -->
-        <section class="table-responsive" style="margin-top: 8px;">
+        <section class="table-responsive" style="margin-top: 4px;">
             <table class="data-table matrix-table" id="monthly-matrix-table">
                 <thead>
-                    <tr>
-                        <th style="text-align: left;">Category / Month</th>
+                    <tr id="monthly-matrix-header">
+                        <th style="text-align: left; min-width: 160px;">Category / Month</th>
                         <th>Jan</th>
                         <th>Feb</th>
                         <th>Mar</th>
@@ -64,7 +86,7 @@
                         <th>Oct</th>
                         <th>Nov</th>
                         <th>Dec</th>
-                        <th>Total</th>
+                        <th style="background: var(--primary-color); color: white; border-radius: 0 6px 6px 0;">Total</th>
                     </tr>
                 </thead>
                 <tbody id="monthly-matrix-tbody">
