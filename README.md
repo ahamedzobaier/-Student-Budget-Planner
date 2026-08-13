@@ -1,6 +1,8 @@
 # Student Budget Planner (BD Edition)
 
 > **Web Programming Course • Group Project • Uttara University**
+> 
+> 🌐 **Live Vercel App**: [https://budgetbd.vercel.app](https://budgetbd.vercel.app) (or [https://budgetbd.vercel.app/dashboard.html](https://budgetbd.vercel.app/dashboard.html))
 
 A clean, responsive, client-side web application designed exclusively for Bangladesh university students. It empowers students to track daily local allowance & expenses, enforce strict balance spending validation, set monthly category budget limits, visualize full 12-month spending trends, manage routine monthly expenses side-by-side, and plan university semester academic fees.
 
