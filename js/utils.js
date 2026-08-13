@@ -378,9 +378,14 @@ function renderProfileViewMode() {
                 </div>
             </div>
 
-            <div class="modal-footer" style="margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--border-color); display: flex; gap: 8px;">
-                <button class="btn-primary" onclick="renderProfileEditMode()" style="flex: 1; padding: 8px; font-size: 0.85rem;"><i class="ph ph-pencil-simple"></i> Edit Profile</button>
-                <button class="btn-secondary" onclick="closeModal('demo-profile-modal')" style="flex: 1; padding: 8px; font-size: 0.85rem;">Close</button>
+            <div class="modal-footer" style="margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-primary" onclick="renderProfileEditMode()" style="flex: 1; padding: 8px; font-size: 0.85rem;"><i class="ph ph-pencil-simple"></i> Edit Profile</button>
+                    <button class="btn-secondary" onclick="closeModal('demo-profile-modal')" style="flex: 1; padding: 8px; font-size: 0.85rem;">Close</button>
+                </div>
+                <button class="btn-danger-outline" onclick="clearAllData()" style="width: 100%; padding: 8px; font-size: 0.8rem; justify-content: center;">
+                    <i class="ph ph-trash"></i> Clear All Data
+                </button>
             </div>
         </div>
     `;
