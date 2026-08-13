@@ -2,7 +2,7 @@
 
 > **Web Programming Course • Group Project • Uttara University**
 
-A clean, responsive, client-side web application designed exclusively for Bangladesh university students. It empowers students to track daily local allowance & expenses, set monthly category budget limits, visualize full 12-month spending trends, manage routine monthly expenses side-by-side, and plan university semester academic fees.
+A clean, responsive, client-side web application designed exclusively for Bangladesh university students. It empowers students to track daily local allowance & expenses, enforce strict balance spending validation, set monthly category budget limits, visualize full 12-month spending trends, manage routine monthly expenses side-by-side, and plan university semester academic fees.
 
 ---
 
@@ -16,17 +16,26 @@ A clean, responsive, client-side web application designed exclusively for Bangla
 
 ---
 
+## 🌟 Key Application Features & Validation Rules
+
+- **🛡️ Balance Validation Modal (`Total Expenses <= Current Balance`)**: Strictly prevents expenses from exceeding current available balance (`Total Income - Total Expenses`). Displays an interactive Insufficient Balance Warning Modal popup showing the shortage amount.
+- **🇧🇩 Unified BDT Currency Flow**: Standardized Bangladeshi Taka (`Tk`) formatting across all pages and calculations.
+- **💬 Interactive Modal Popup Forms**: Accessible, animated popup form modals for adding transactions, setting category budget limits, and adding academic costs.
+- **📝 Everyday Humanized Code Comments**: Simple, warm, easy-to-read code comments throughout all HTML, CSS, and JS files.
+
+---
+
 ## 🌟 6-Page Application Structure
 
 The application features a responsive, glassmorphic floating navigation header connecting **6 core pages**:
 
 | Page | File | Key Features & Responsibilities |
 | :--- | :--- | :--- |
-| **01. Dashboard** | [`index.html`](file:///e:/project/Student_budget_planner/index.html) | Main hub displaying 4 summary stat cards (*Current Balance*, *Total Income*, *Total Expenses*, *Remaining Goal %*), Quick Add form, and 5 recent transactions. |
-| **02. Transactions Log** | [`transactions.html`](file:///e:/project/Student_budget_planner/transactions.html) | Complete 12-month searchable data log. Filter by *Type*, *Category*, *Month* (Jan–Dec), or *Description Search query*. Supports instant entry deletion. |
-| **03. Category Budget** | [`budget.html`](file:///e:/project/Student_budget_planner/budget.html) | Set and update monthly spending limits per category. Tracks spent vs. limit with visual progress bars and `OVER` status red alerts. |
+| **01. Dashboard** | [`index.html`](file:///e:/project/Student_budget_planner/index.html) | Main hub displaying 4 summary stat cards (*Current Balance*, *Total Income*, *Total Expenses*, *Remaining Goal %*), Quick Add form, popup transaction modal, and 5 recent transactions. |
+| **02. Transactions Log** | [`transactions.html`](file:///e:/project/Student_budget_planner/transactions.html) | Complete 12-month searchable data log. Filter by *Type*, *Category*, *Month* (Jan–Dec), or *Description Search query*. Supports instant entry deletion and modal additions. |
+| **03. Category Budget** | [`budget.html`](file:///e:/project/Student_budget_planner/budget.html) | Set and update monthly spending limits per category. Tracks spent vs. limit with visual progress bars, progress % indicators, and `OVER` status red alerts. |
 | **04. Spending Charts** | [`charts.html`](file:///e:/project/Student_budget_planner/charts.html) | Visual analytics powered by **Chart.js**. Features a Doughnut chart for Category Breakdown and a 12-Month Bar chart (`Jan`–`Dec`) for Monthly Spending Trends with a month dropdown filter. |
-| **05. Monthly View** | [`monthly.html`](file:///e:/project/Student_budget_planner/monthly.html) | 12-month side-by-side expense matrix (`Jan`–`Dec`) for routine student living costs with sticky category column for touch scrolling. |
+| **05. Monthly View** | [`monthly.html`](file:///e:/project/Student_budget_planner/monthly.html) | 12-month side-by-side financial matrix (`Jan`–`Dec`) sectioned into *INCOME SOURCES*, *REGULAR EXPENSES*, and *NET SAVINGS & BALANCE* with sticky category column for touch scrolling. |
 | **06. Semester Matrix** | [`semester.html`](file:///e:/project/Student_budget_planner/semester.html) | Dedicated University Academic Cost Planner (*Admission Fee*, *Credit/Tuition Fee*, *Exam Fee*, *Hall/Hostel Bill*, *Books & Lab Manuals*). Calculates expected vs actual variance, disposable income, and safe monthly budget. |
 
 ---
@@ -34,7 +43,7 @@ The application features a responsive, glassmorphic floating navigation header c
 ## 🛠️ Technology Stack & Mobile Optimization
 
 - **Structure:** HTML5 Semantic Markup
-- **Styling:** Vanilla CSS3 (Glassmorphism design, CSS variables, 2x2 mobile stat grid, sticky table columns, touch scrolling, responsive typography)
+- **Styling:** Vanilla CSS3 (Glassmorphism design, CSS variables, 2x2 mobile stat grid, modal popups, sticky table columns, touch scrolling, responsive typography)
 - **Logic & Storage:** Vanilla JavaScript (ES6+), HTML5 `localStorage` JSON API
 - **Data Visualization:** Chart.js (12-month trends)
 - **Icons & Typography:** Phosphor Icons, Google Inter Font
