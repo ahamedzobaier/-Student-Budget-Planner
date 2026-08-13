@@ -931,25 +931,29 @@ select:focus {
     gap: 10px;
     font-weight: 500;
     font-size: 0.875rem;
+    transform: translateX(120%);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-left: 4px solid var(--primary-color);
+}
 
-    .toast.show {
-        transform: translateX(0);
-    }
+.toast.show {
+    transform: translateX(0);
+}
 
-    .toast-success {
-        border-left-color: var(--green);
-        color: #065f46;
-    }
+.toast-success {
+    border-left-color: var(--green);
+    color: #065f46;
+}
 
-    .toast-error {
-        border-left-color: var(--red);
-        color: #991b1b;
-    }
+.toast-error {
+    border-left-color: var(--red);
+    color: #991b1b;
+}
 
-    .toast-info {
-        border-left-color: var(--primary-color);
-        color: var(--primary-color);
-    }
+.toast-info {
+    border-left-color: var(--primary-color);
+    color: var(--primary-color);
+}
 
     /* --------------------------------------------------------------------------
    9. COMPREHENSIVE RESPONSIVE DESIGN
