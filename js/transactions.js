@@ -153,10 +153,10 @@ function deleteTransactionItem(id) {
     }
 }
 
-// Pre-fill today's date on modal date picker
+// Pre-fill today's current date on modal date picker automatically
 function initModalDate() {
     const dateInput = document.getElementById('modal-date');
-    if (dateInput && !dateInput.value) {
+    if (dateInput) {
         dateInput.value = new Date().toISOString().split('T')[0];
     }
 }
@@ -199,6 +199,7 @@ if (modalTransactionForm) {
         saveTransactions(transactions);
 
         modalTransactionForm.reset();
+        initModalDate();
         closeModal('add-transaction-modal');
         populateYearFilter();
         renderTransactionsTable();

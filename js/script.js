@@ -209,10 +209,10 @@ function handleAddTransaction(type, amount, category, description, customDate) {
     return true;
 }
 
-// Pre-fill today's date on modal date picker
+// Pre-fill today's current date on modal date picker automatically
 function initModalDate() {
     const dateInput = document.getElementById('modal-date');
-    if (dateInput && !dateInput.value) {
+    if (dateInput) {
         dateInput.value = new Date().toISOString().split('T')[0];
     }
 }
@@ -226,11 +226,12 @@ if (modalTransactionForm) {
         const category = document.getElementById('modal-category').value;
         const description = document.getElementById('modal-description').value;
         const dateInput = document.getElementById('modal-date');
-        const customDate = dateInput ? dateInput.value : '';
+        const customDate = dateInput ? dateInput.value : new Date().toISOString().split('T')[0];
 
         const success = handleAddTransaction(type, amount, category, description, customDate);
         if (success) {
             modalTransactionForm.reset();
+            initModalDate();
             closeModal('add-transaction-modal');
         }
     });
