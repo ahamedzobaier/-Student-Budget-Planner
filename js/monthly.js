@@ -154,10 +154,14 @@ function renderMonthlyMatrix() {
     // Income Subtotal Row
     const trIncSub = document.createElement('tr');
     trIncSub.className = 'matrix-subtotal-row income-subtotal';
-    let incSubHtml = `<td style="text-align: left; color: var(--green);">Total Monthly Income</td>`;
+    let incSubHtml = `<td style="text-align: left; color: var(--green); font-weight: 700;">Total Monthly Income</td>`;
     monthIndexes.forEach(m => {
         const incVal = monthlyTotalInc[m];
-        incSubHtml += `<td style="color: var(--green);">Tk ${formatMoney(incVal)}</td>`;
+        if (incVal > 0) {
+            incSubHtml += `<td style="color: var(--green); font-weight: 600;">Tk ${formatMoney(incVal)}</td>`;
+        } else {
+            incSubHtml += `<td style="color: var(--text-muted); opacity: 0.6;">-</td>`;
+        }
     });
     incSubHtml += `<td style="color: var(--green); font-weight: 700;">Tk ${formatMoney(grandTotalInc)}</td>`;
     trIncSub.innerHTML = incSubHtml;
@@ -194,10 +198,14 @@ function renderMonthlyMatrix() {
     // Expense Subtotal Row
     const trExpSub = document.createElement('tr');
     trExpSub.className = 'matrix-subtotal-row expense-subtotal';
-    let expSubHtml = `<td style="text-align: left; color: var(--red);">Total Monthly Expenses</td>`;
+    let expSubHtml = `<td style="text-align: left; color: var(--red); font-weight: 700;">Total Monthly Expenses</td>`;
     monthIndexes.forEach(m => {
         const expVal = monthlyTotalExp[m];
-        expSubHtml += `<td style="color: var(--red);">Tk ${formatMoney(expVal)}</td>`;
+        if (expVal > 0) {
+            expSubHtml += `<td style="color: var(--red); font-weight: 600;">Tk ${formatMoney(expVal)}</td>`;
+        } else {
+            expSubHtml += `<td style="color: var(--text-muted); opacity: 0.6;">-</td>`;
+        }
     });
     expSubHtml += `<td style="color: var(--red); font-weight: 700;">Tk ${formatMoney(grandTotalExp)}</td>`;
     trExpSub.innerHTML = expSubHtml;
@@ -218,7 +226,7 @@ function renderMonthlyMatrix() {
 
     monthIndexes.forEach(m => {
         const net = monthlyTotalInc[m] - monthlyTotalExp[m];
-        let colorStyle = 'color: var(--text-muted);';
+        let colorStyle = 'color: var(--text-muted); opacity: 0.6;';
         let formattedVal = '-';
 
         if (net > 0) {
