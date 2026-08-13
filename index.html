@@ -33,6 +33,17 @@
     </nav>
 
     <main class="dashboard-container">
+        <!-- Live Date & Time Header -->
+        <div class="date-header-bar">
+            <div>
+                <h2 style="font-size: 1.3rem; font-weight: 700; color: var(--text-main);">Welcome Back, <span id="welcome-student-name">Student</span>! 👋</h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;">Here is your live financial overview</p>
+            </div>
+            <div id="live-date-time" class="live-date-badge">
+                <i class="ph ph-clock"></i> Loading date & time...
+            </div>
+        </div>
+
         <!-- Budget Warning Banner Container -->
         <div id="budget-alert-container"></div>
 

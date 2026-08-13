@@ -419,9 +419,43 @@ function renderProfileEditMode() {
     }
 }
 
+// Live Clock & Date Formatter
+function initLiveClock() {
+    function updateClock() {
+        const dateEl = document.getElementById('live-date-time');
+        const nameEl = document.getElementById('welcome-student-name');
+
+        if (nameEl) {
+            const profile = getStoredStudentProfile();
+            nameEl.innerText = profile.name || 'Student';
+        }
+
+        if (dateEl) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-US', {
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            });
+            const timeStr = now.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            });
+            dateEl.innerHTML = `<i class="ph ph-clock" style="color: #6366f1;"></i> <span>${dateStr} • ${timeStr}</span>`;
+        }
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+}
+
 // Auto-attach avatar click handlers and sync avatar letter when DOM loads
 document.addEventListener('DOMContentLoaded', function() {
     updateAvatarInitial();
+    initLiveClock();
     const avatarEls = document.querySelectorAll('.avatar, .user-profile');
     avatarEls.forEach(el => {
         el.style.cursor = 'pointer';
