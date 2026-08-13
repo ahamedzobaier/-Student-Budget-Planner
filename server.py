@@ -6,7 +6,7 @@ PORT = 8000
 class CustomHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         # Redirect or serve /dashboard.html on root request
-        if self.path == '/' or self.path == '/index.html':
+        if self.path == '/':
             self.path = '/dashboard.html'
         return super().do_GET()
 
