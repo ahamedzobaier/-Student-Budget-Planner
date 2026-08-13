@@ -3,6 +3,7 @@
 // Renders Category Doughnut Chart and 12-Month Spending Trend Bar Chart
 // ==========================================================================
 
+const yearSelect = document.getElementById('chart-year-select');
 const monthSelect = document.getElementById('chart-month-select');
 let pieChartInstance = null;
 let trendChartInstance = null;
@@ -18,17 +19,59 @@ const colorPalette = [
     '#ec4899'  // Pink
 ];
 
+// Populate Year dropdown dynamically from logged transactions
+function populateChartYearSelect() {
+    if (!yearSelect) return;
+
+    const transactions = getStoredTransactions();
+    const years = new Set();
+    const currentYear = new Date().getFullYear();
+    years.add(currentYear);
+
+    transactions.forEach(t => {
+        if (t.date) {
+            const yr = parseInt(t.date.split('-')[0], 10);
+            if (!isNaN(yr)) years.add(yr);
+        }
+    });
+
+    const sortedYears = Array.from(years).sort((a, b) => b - a);
+    const prevVal = yearSelect.value;
+
+    yearSelect.innerHTML = '';
+    sortedYears.forEach(yr => {
+        const opt = document.createElement('option');
+        opt.value = yr.toString();
+        opt.textContent = yr.toString();
+        yearSelect.appendChild(opt);
+    });
+
+    if (prevVal && sortedYears.includes(parseInt(prevVal, 10))) {
+        yearSelect.value = prevVal;
+    } else {
+        yearSelect.value = currentYear.toString();
+    }
+}
+
 // Main function to draw and refresh all Chart.js visualizations
 function renderCharts() {
     const transactions = getStoredTransactions();
+    const selectedYear = yearSelect ? yearSelect.value : new Date().getFullYear().toString();
     const selectedMonth = monthSelect ? monthSelect.value : 'all';
 
-    // 1. Filter expense transactions
-    const expenses = transactions.filter(t => t.type === 'expense');
-    
-    let filteredExpenses = expenses;
+    // Filter expense transactions for selected year
+    const yearExpenses = transactions.filter(t => {
+        if (t.type !== 'expense' || !t.date) return false;
+        return t.date.startsWith(selectedYear);
+    });
+
+    let filteredExpenses = yearExpenses;
     if (selectedMonth !== 'all') {
-        filteredExpenses = expenses.filter(t => t.date && t.date.startsWith(selectedMonth));
+        filteredExpenses = yearExpenses.filter(t => {
+            const parts = t.date.split('-');
+            const mo = parseInt(parts[1], 10).toString();
+            return mo === selectedMonth;
+        });
     }
 
     // Group expenses by Category
@@ -78,13 +121,16 @@ function renderCharts() {
         });
     }
 
-    // 2. Render 12-Month Spending Trend Bar Chart (Jan - Dec)
-    const monthKeys = ALL_12_MONTHS.map(m => m.key);
-    const monthNames = ALL_12_MONTHS.map(m => m.name);
-    const monthlyTotals = monthKeys.map(key => {
-        return expenses
-            .filter(t => t.date && t.date.startsWith(key))
-            .reduce((sum, t) => sum + Number(t.amount), 0);
+    // Render 12-Month Spending Trend Bar Chart (Jan - Dec) for Selected Year
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthlyTotals = Array(12).fill(0);
+
+    yearExpenses.forEach(t => {
+        const parts = t.date.split('-');
+        const moIndex = parseInt(parts[1], 10) - 1;
+        if (moIndex >= 0 && moIndex < 12) {
+            monthlyTotals[moIndex] += Number(t.amount);
+        }
     });
 
     const trendCanvas = document.getElementById('monthlyTrendChart');
@@ -97,7 +143,7 @@ function renderCharts() {
             data: {
                 labels: monthNames,
                 datasets: [{
-                    label: 'Expenses (Tk)',
+                    label: `Expenses ${selectedYear} (Tk)`,
                     data: monthlyTotals,
                     backgroundColor: '#1e3a8a',
                     borderRadius: 4,
@@ -133,10 +179,11 @@ function renderCharts() {
     }
 }
 
-// Re-render charts whenever user changes the month select dropdown
-if (monthSelect) {
-    monthSelect.addEventListener('change', renderCharts);
-}
+// Attach filter listeners
+[yearSelect, monthSelect].forEach(el => {
+    if (el) el.addEventListener('change', renderCharts);
+});
 
-// Initial draw on page load
+// Initial load
+populateChartYearSelect();
 renderCharts();

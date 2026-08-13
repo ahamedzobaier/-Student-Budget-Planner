@@ -120,7 +120,7 @@ function checkBudgetWarnings(allTransactions) {
 }
 
 // Add transaction with strict Total Expenses <= Current Balance validation rule
-function handleAddTransaction(type, amount, category, description) {
+function handleAddTransaction(type, amount, category, description, customDate) {
     const amt = parseFloat(amount);
 
     if (isNaN(amt) || amt <= 0) {
@@ -138,6 +138,8 @@ function handleAddTransaction(type, amount, category, description) {
         }
     }
 
+    const txDate = customDate || new Date().toISOString().split('T')[0];
+
     // Build new transaction object
     const newTransaction = {
         id: Date.now(),
@@ -145,7 +147,7 @@ function handleAddTransaction(type, amount, category, description) {
         amount: amt,
         category: category,
         description: description,
-        date: new Date().toISOString().split('T')[0] // YYYY-MM-DD format
+        date: txDate // YYYY-MM-DD format (dynamic year/month/day)
     };
 
     transactions.push(newTransaction);
@@ -156,6 +158,14 @@ function handleAddTransaction(type, amount, category, description) {
     return true;
 }
 
+// Pre-fill today's date on modal date picker
+function initModalDate() {
+    const dateInput = document.getElementById('modal-date');
+    if (dateInput && !dateInput.value) {
+        dateInput.value = new Date().toISOString().split('T')[0];
+    }
+}
+
 // Handle Modal Popup Form Submit
 if (modalTransactionForm) {
     modalTransactionForm.addEventListener('submit', function(e) {
@@ -164,8 +174,10 @@ if (modalTransactionForm) {
         const amount = document.getElementById('modal-amount').value;
         const category = document.getElementById('modal-category').value;
         const description = document.getElementById('modal-description').value;
+        const dateInput = document.getElementById('modal-date');
+        const customDate = dateInput ? dateInput.value : '';
 
-        const success = handleAddTransaction(type, amount, category, description);
+        const success = handleAddTransaction(type, amount, category, description, customDate);
         if (success) {
             modalTransactionForm.reset();
             closeModal('add-transaction-modal');
@@ -175,5 +187,6 @@ if (modalTransactionForm) {
 
 // Initialize Dashboard UI & Dynamic Category Dropdowns on load
 setupDynamicCategoryDropdown('modal-type', 'modal-category');
+initModalDate();
 
 updateDashboardUI();

@@ -5,6 +5,7 @@
 
 const typeFilter = document.getElementById('filter-type');
 const categoryFilter = document.getElementById('filter-category');
+const yearFilter = document.getElementById('filter-year');
 const monthFilter = document.getElementById('filter-month');
 const searchInput = document.getElementById('search-input');
 const tbody = document.getElementById('transactions-tbody');
@@ -13,6 +14,38 @@ const modalTransactionForm = document.getElementById('modal-transaction-form');
 
 let transactions = getStoredTransactions();
 
+// Populate Year Filter dropdown dynamically from transactions
+function populateYearFilter() {
+    if (!yearFilter) return;
+
+    transactions = getStoredTransactions();
+    const years = new Set();
+    const currentYear = new Date().getFullYear();
+    years.add(currentYear);
+
+    transactions.forEach(t => {
+        if (t.date) {
+            const yr = parseInt(t.date.split('-')[0], 10);
+            if (!isNaN(yr)) years.add(yr);
+        }
+    });
+
+    const sortedYears = Array.from(years).sort((a, b) => b - a);
+    const selectedVal = yearFilter.value;
+
+    yearFilter.innerHTML = '<option value="all">All Years</option>';
+    sortedYears.forEach(yr => {
+        const opt = document.createElement('option');
+        opt.value = yr.toString();
+        opt.textContent = yr.toString();
+        yearFilter.appendChild(opt);
+    });
+
+    if (selectedVal && Array.from(yearFilter.options).some(o => o.value === selectedVal)) {
+        yearFilter.value = selectedVal;
+    }
+}
+
 // Format date string for standard table display
 function formatDateDisplay(dateStr) {
     if (!dateStr) return 'N/A';
@@ -20,7 +53,7 @@ function formatDateDisplay(dateStr) {
         const d = new Date(dateStr);
         if (isNaN(d.getTime())) return dateStr;
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        return `${months[d.getMonth()]} ${d.getDate()}`;
+        return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
     } catch (e) {
         return dateStr;
     }
@@ -32,6 +65,7 @@ function renderTransactionsTable() {
 
     const selectedType = typeFilter ? typeFilter.value : 'all';
     const selectedCategory = categoryFilter ? categoryFilter.value : 'all';
+    const selectedYear = yearFilter ? yearFilter.value : 'all';
     const selectedMonth = monthFilter ? monthFilter.value : 'all';
     const searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
@@ -39,8 +73,14 @@ function renderTransactionsTable() {
     let filtered = transactions.filter(t => {
         if (selectedType !== 'all' && t.type !== selectedType) return false;
         if (selectedCategory !== 'all' && t.category !== selectedCategory) return false;
-        if (selectedMonth !== 'all') {
-            if (!t.date || !t.date.startsWith(selectedMonth)) return false;
+
+        if (t.date) {
+            const parts = t.date.split('-');
+            const txYr = parts[0];
+            const txMo = parseInt(parts[1], 10).toString();
+
+            if (selectedYear !== 'all' && txYr !== selectedYear) return false;
+            if (selectedMonth !== 'all' && txMo !== selectedMonth) return false;
         }
 
         if (searchQuery) {
@@ -90,10 +130,10 @@ function renderTransactionsTable() {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td><strong>${dateText}</strong></td>
-            <td>${descText}</td>
-            <td><span class="t-category">${t.category}</span></td>
             <td style="text-transform: capitalize;">${t.type}</td>
-            <td class="${amtClass}" style="font-weight: 600;">${sign}Tk ${formatMoney(t.amount)}</td>
+            <td><span class="t-category">${t.category}</span></td>
+            <td>${descText}</td>
+            <td class="${amtClass}" style="font-weight: 600; text-align: right;">${sign}Tk ${formatMoney(t.amount)}</td>
             <td style="text-align: center;">
                 <button class="btn-danger-outline" onclick="deleteTransactionItem(${t.id})" title="Delete entry" style="padding: 2px 8px; font-size: 0.75rem;">Del</button>
             </td>
@@ -107,8 +147,17 @@ function deleteTransactionItem(id) {
     if (confirm("Delete this transaction entry?")) {
         transactions = transactions.filter(t => t.id !== id);
         saveTransactions(transactions);
+        populateYearFilter();
         renderTransactionsTable();
         showToast("Transaction deleted", "info");
+    }
+}
+
+// Pre-fill today's date on modal date picker
+function initModalDate() {
+    const dateInput = document.getElementById('modal-date');
+    if (dateInput && !dateInput.value) {
+        dateInput.value = new Date().toISOString().split('T')[0];
     }
 }
 
@@ -120,6 +169,8 @@ if (modalTransactionForm) {
         const amt = parseFloat(document.getElementById('modal-amount').value);
         const category = document.getElementById('modal-category').value;
         const description = document.getElementById('modal-description').value;
+        const dateInput = document.getElementById('modal-date');
+        const customDate = dateInput ? dateInput.value : new Date().toISOString().split('T')[0];
 
         if (isNaN(amt) || amt <= 0) {
             showToast('Please enter a valid amount', 'error');
@@ -141,7 +192,7 @@ if (modalTransactionForm) {
             amount: amt,
             category: category,
             description: description,
-            date: new Date().toISOString().split('T')[0]
+            date: customDate
         };
 
         transactions.push(newTransaction);
@@ -149,6 +200,7 @@ if (modalTransactionForm) {
 
         modalTransactionForm.reset();
         closeModal('add-transaction-modal');
+        populateYearFilter();
         renderTransactionsTable();
         showToast("Transaction added successfully!", "success");
     });
@@ -179,6 +231,22 @@ if (typeFilter && categoryFilter) {
         renderTransactionsTable();
     });
 }
+
+// Attach filter listeners
+[categoryFilter, yearFilter, monthFilter, searchInput].forEach(el => {
+    if (el) {
+        el.addEventListener('change', renderTransactionsTable);
+        if (el === searchInput) {
+            el.addEventListener('input', renderTransactionsTable);
+        }
+    }
+});
+
+// Initial load setup
+setupDynamicCategoryDropdown('modal-type', 'modal-category');
+initModalDate();
+populateYearFilter();
+renderTransactionsTable();
 
 // Setup dynamic category dropdown for Add Transaction modal
 setupDynamicCategoryDropdown('modal-type', 'modal-category');

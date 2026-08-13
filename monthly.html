@@ -33,9 +33,17 @@
     </nav>
 
     <main class="dashboard-container">
-        <div>
-            <h2>12-Month Financial Summary Matrix</h2>
-            <p style="color: var(--text-muted); margin-top: 2px; font-size: 0.85rem;">A complete side-by-side breakdown of your monthly income sources, regular living expenses, and net savings balance across all 12 months.</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div>
+                <h2>12-Month Financial Summary Matrix</h2>
+                <p style="color: var(--text-muted); margin-top: 2px; font-size: 0.85rem;">A complete side-by-side breakdown of your monthly income sources, regular living expenses, and net savings balance across all 12 months.</p>
+            </div>
+            <div>
+                <label for="monthly-year-select" style="font-weight: 600; font-size: 0.85rem; margin-right: 6px;">Select Year:</label>
+                <select id="monthly-year-select" style="padding: 6px 12px; font-size: 0.85rem; width: auto;">
+                    <!-- Dynamically populated by JS -->
+                </select>
+            </div>
         </div>
 
         <!-- 12-Month Matrix Data Table -->

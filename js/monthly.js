@@ -1,6 +1,5 @@
-// 12-Month Financial Summary Matrix logic (monthly.html)
-
 const matrixTbody = document.getElementById('monthly-matrix-tbody');
+const monthlyYearSelect = document.getElementById('monthly-year-select');
 
 const defaultIncomeCategories = ['Income', 'Tutoring', 'Scholarship', 'Other Income'];
 const defaultExpenseCategories = ['Mess Bill', 'Tuition', 'Recharge', 'Other Expenses'];
@@ -21,8 +20,45 @@ function getHumanCategoryName(cat) {
     return categoryHumanNames[cat] || cat;
 }
 
-function renderMonthlyMatrix() {
+// Populate Year Selector for Monthly Matrix Page
+function populateMonthlyYearSelect() {
+    if (!monthlyYearSelect) return;
+
     const transactions = getStoredTransactions();
+    const years = new Set();
+    const currentYear = new Date().getFullYear();
+    years.add(currentYear);
+
+    transactions.forEach(t => {
+        if (t.date) {
+            const yr = parseInt(t.date.split('-')[0], 10);
+            if (!isNaN(yr)) years.add(yr);
+        }
+    });
+
+    const sortedYears = Array.from(years).sort((a, b) => b - a);
+    const prevVal = monthlyYearSelect.value;
+
+    monthlyYearSelect.innerHTML = '';
+    sortedYears.forEach(yr => {
+        const opt = document.createElement('option');
+        opt.value = yr.toString();
+        opt.textContent = yr.toString();
+        monthlyYearSelect.appendChild(opt);
+    });
+
+    if (prevVal && sortedYears.includes(parseInt(prevVal, 10))) {
+        monthlyYearSelect.value = prevVal;
+    } else {
+        monthlyYearSelect.value = currentYear.toString();
+    }
+}
+
+function renderMonthlyMatrix() {
+    if (!matrixTbody) return;
+
+    const transactions = getStoredTransactions();
+    const selectedYear = monthlyYearSelect ? monthlyYearSelect.value : new Date().getFullYear().toString();
 
     // 1. Separate Income and Expense categories
     const incomeCatSet = new Set(defaultIncomeCategories);
@@ -40,43 +76,47 @@ function renderMonthlyMatrix() {
     const incomeCategories = Array.from(incomeCatSet);
     const expenseCategories = Array.from(expenseCatSet);
 
-    // 2. Build Income & Expense Matrices
+    // 2. Build Income & Expense Matrices for Months 1-12 of selected year
+    const monthIndexes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
     const incomeMatrix = {};
     incomeCategories.forEach(cat => {
         incomeMatrix[cat] = {};
-        ALL_12_MONTHS.forEach(m => incomeMatrix[cat][m.key] = 0);
+        monthIndexes.forEach(m => incomeMatrix[cat][m] = 0);
     });
 
     const expenseMatrix = {};
     expenseCategories.forEach(cat => {
         expenseMatrix[cat] = {};
-        ALL_12_MONTHS.forEach(m => expenseMatrix[cat][m.key] = 0);
+        monthIndexes.forEach(m => expenseMatrix[cat][m] = 0);
     });
 
     const monthlyTotalInc = {};
     const monthlyTotalExp = {};
-    ALL_12_MONTHS.forEach(m => {
-        monthlyTotalInc[m.key] = 0;
-        monthlyTotalExp[m.key] = 0;
+    monthIndexes.forEach(m => {
+        monthlyTotalInc[m] = 0;
+        monthlyTotalExp[m] = 0;
     });
 
-    // Populate data
+    // Populate data for the selected year
     transactions.forEach(t => {
         if (!t.date) return;
-        const monthPrefix = t.date.substring(0, 7);
-        if (!ALL_12_MONTHS.some(m => m.key === monthPrefix)) return;
+        const parts = t.date.split('-');
+        const txYr = parts[0];
+        const txMo = parseInt(parts[1], 10);
+
+        if (txYr !== selectedYear || isNaN(txMo) || txMo < 1 || txMo > 12) return;
 
         const amt = Number(t.amount || 0);
 
         if (t.type === 'income') {
-            monthlyTotalInc[monthPrefix] += amt;
+            monthlyTotalInc[txMo] += amt;
             if (incomeMatrix[t.category]) {
-                incomeMatrix[t.category][monthPrefix] += amt;
+                incomeMatrix[t.category][txMo] += amt;
             }
         } else if (t.type === 'expense') {
-            monthlyTotalExp[monthPrefix] += amt;
+            monthlyTotalExp[txMo] += amt;
             if (expenseMatrix[t.category]) {
-                expenseMatrix[t.category][monthPrefix] += amt;
+                expenseMatrix[t.category][txMo] += amt;
             }
         }
     });
@@ -98,8 +138,8 @@ function renderMonthlyMatrix() {
         let rowHtml = `<td style="text-align: left; padding-left: 20px;">${getHumanCategoryName(cat)}</td>`;
         let catYearTotal = 0;
 
-        ALL_12_MONTHS.forEach(m => {
-            const val = incomeMatrix[cat][m.key];
+        monthIndexes.forEach(m => {
+            const val = incomeMatrix[cat][m];
             catYearTotal += val;
             const displayVal = val > 0 ? `Tk ${formatMoney(val)}` : '-';
             rowHtml += `<td>${displayVal}</td>`;
@@ -115,8 +155,8 @@ function renderMonthlyMatrix() {
     const trIncSub = document.createElement('tr');
     trIncSub.className = 'matrix-subtotal-row income-subtotal';
     let incSubHtml = `<td style="text-align: left; color: var(--green);">Total Monthly Income</td>`;
-    ALL_12_MONTHS.forEach(m => {
-        const incVal = monthlyTotalInc[m.key];
+    monthIndexes.forEach(m => {
+        const incVal = monthlyTotalInc[m];
         incSubHtml += `<td style="color: var(--green);">Tk ${formatMoney(incVal)}</td>`;
     });
     incSubHtml += `<td style="color: var(--green); font-weight: 700;">Tk ${formatMoney(grandTotalInc)}</td>`;
@@ -138,8 +178,8 @@ function renderMonthlyMatrix() {
         let rowHtml = `<td style="text-align: left; padding-left: 20px;">${getHumanCategoryName(cat)}</td>`;
         let catYearTotal = 0;
 
-        ALL_12_MONTHS.forEach(m => {
-            const val = expenseMatrix[cat][m.key];
+        monthIndexes.forEach(m => {
+            const val = expenseMatrix[cat][m];
             catYearTotal += val;
             const displayVal = val > 0 ? `Tk ${formatMoney(val)}` : '-';
             rowHtml += `<td>${displayVal}</td>`;
@@ -155,8 +195,8 @@ function renderMonthlyMatrix() {
     const trExpSub = document.createElement('tr');
     trExpSub.className = 'matrix-subtotal-row expense-subtotal';
     let expSubHtml = `<td style="text-align: left; color: var(--red);">Total Monthly Expenses</td>`;
-    ALL_12_MONTHS.forEach(m => {
-        const expVal = monthlyTotalExp[m.key];
+    monthIndexes.forEach(m => {
+        const expVal = monthlyTotalExp[m];
         expSubHtml += `<td style="color: var(--red);">Tk ${formatMoney(expVal)}</td>`;
     });
     expSubHtml += `<td style="color: var(--red); font-weight: 700;">Tk ${formatMoney(grandTotalExp)}</td>`;
@@ -176,8 +216,8 @@ function renderMonthlyMatrix() {
     trBal.className = 'matrix-subtotal-row balance-subtotal';
     let balRowHtml = `<td style="text-align: left; font-weight: 700;">Net Monthly Savings</td>`;
 
-    ALL_12_MONTHS.forEach(m => {
-        const net = monthlyTotalInc[m.key] - monthlyTotalExp[m.key];
+    monthIndexes.forEach(m => {
+        const net = monthlyTotalInc[m] - monthlyTotalExp[m];
         let colorStyle = 'color: var(--text-muted);';
         let formattedVal = '-';
 
@@ -199,5 +239,10 @@ function renderMonthlyMatrix() {
     matrixTbody.appendChild(trBal);
 }
 
-// Init
+if (monthlyYearSelect) {
+    monthlyYearSelect.addEventListener('change', renderMonthlyMatrix);
+}
+
+// Initial setup
+populateMonthlyYearSelect();
 renderMonthlyMatrix();
