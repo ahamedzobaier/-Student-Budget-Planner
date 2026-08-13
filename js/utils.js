@@ -240,11 +240,11 @@ function closeModal(modalId) {
 // Get saved Student Profile details from localStorage
 function getStoredStudentProfile() {
     return JSON.parse(localStorage.getItem('studentProfile')) || {
-        name: 'Student Demo Profile',
+        name: 'Zobaier Hasan',
         university: 'Uttara University',
         department: 'Computer Science (CSE)',
-        studentId: 'UG-2026-BD89',
-        semester: '6th Semester'
+        studentId: '2241081345',
+        semester: 'Summer 2026'
     };
 }
 
