@@ -24,14 +24,57 @@ function getHumanCategoryName(cat) {
 }
 
 // Render the Category Budget Limits Table
+const budgetYearSelect = document.getElementById('budget-year-select');
+
+// Populate Year Selector for Budget Page
+function populateBudgetYearSelect() {
+    if (!budgetYearSelect) return;
+
+    const transactions = getStoredTransactions();
+    const years = new Set();
+    const currentYear = new Date().getFullYear();
+    years.add(currentYear);
+
+    transactions.forEach(t => {
+        if (t.date) {
+            const yr = parseInt(t.date.split('-')[0], 10);
+            if (!isNaN(yr)) years.add(yr);
+        }
+    });
+
+    const sortedYears = Array.from(years).sort((a, b) => b - a);
+    const prevVal = budgetYearSelect.value;
+
+    budgetYearSelect.innerHTML = '<option value="all">All Years</option>';
+    sortedYears.forEach(yr => {
+        const opt = document.createElement('option');
+        opt.value = yr.toString();
+        opt.textContent = yr.toString();
+        budgetYearSelect.appendChild(opt);
+    });
+
+    if (prevVal && Array.from(budgetYearSelect.options).some(o => o.value === prevVal)) {
+        budgetYearSelect.value = prevVal;
+    } else {
+        budgetYearSelect.value = currentYear.toString();
+    }
+}
+
+// Render Budget Limits Table for selected year
 function renderBudgetLimitsTable() {
     const transactions = getStoredTransactions();
     const budgets = getStoredCategoryBudgets();
+    const selectedYear = budgetYearSelect ? budgetYearSelect.value : 'all';
 
-    // Calculate total spent/earned per category
+    // Calculate total spent per category for selected year
     const spentByCategory = {};
     transactions.forEach(t => {
-        spentByCategory[t.category] = (spentByCategory[t.category] || 0) + Number(t.amount);
+        if (t.type === 'expense' && t.category) {
+            if (selectedYear !== 'all') {
+                if (!t.date || !t.date.startsWith(selectedYear)) return;
+            }
+            spentByCategory[t.category] = (spentByCategory[t.category] || 0) + Number(t.amount);
+        }
     });
 
     if (!budgetTbody) return;
@@ -120,5 +163,11 @@ if (modalBudgetForm) {
     });
 }
 
-// Init table
+if (budgetYearSelect) {
+    budgetYearSelect.addEventListener('change', renderBudgetLimitsTable);
+}
+
+// Initial setup
+setupDynamicCategoryDropdown('modal-budget-cat', null);
+populateBudgetYearSelect();
 renderBudgetLimitsTable();

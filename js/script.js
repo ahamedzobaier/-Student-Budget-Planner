@@ -12,19 +12,62 @@ const remainingGoalEl = document.getElementById('remaining-goal');
 const recentListEl = document.getElementById('recent-transaction-list');
 const alertContainer = document.getElementById('budget-alert-container');
 
+const dashboardYearSelect = document.getElementById('dashboard-year-select');
+
 // Load stored transactions and budgets from localStorage
 let transactions = getStoredTransactions();
 let categoryBudgets = getStoredCategoryBudgets();
 
-// Update all stat cards, alert banners, and recent transaction list
+// Populate Dashboard Year Select Dropdown
+function populateDashboardYearSelect() {
+    if (!dashboardYearSelect) return;
+
+    transactions = getStoredTransactions();
+    const years = new Set();
+    const currentYear = new Date().getFullYear();
+    years.add(currentYear);
+
+    transactions.forEach(t => {
+        if (t.date) {
+            const yr = parseInt(t.date.split('-')[0], 10);
+            if (!isNaN(yr)) years.add(yr);
+        }
+    });
+
+    const sortedYears = Array.from(years).sort((a, b) => b - a);
+    const prevVal = dashboardYearSelect.value;
+
+    dashboardYearSelect.innerHTML = '<option value="all">All Years</option>';
+    sortedYears.forEach(yr => {
+        const opt = document.createElement('option');
+        opt.value = yr.toString();
+        opt.textContent = yr.toString();
+        dashboardYearSelect.appendChild(opt);
+    });
+
+    if (prevVal && Array.from(dashboardYearSelect.options).some(o => o.value === prevVal)) {
+        dashboardYearSelect.value = prevVal;
+    } else {
+        dashboardYearSelect.value = currentYear.toString();
+    }
+}
+
+// Update all stat cards, alert banners, and recent transaction list for selected year
 function updateDashboardUI() {
     transactions = getStoredTransactions();
     categoryBudgets = getStoredCategoryBudgets();
 
+    const selectedYear = dashboardYearSelect ? dashboardYearSelect.value : 'all';
+
+    let filteredTx = transactions;
+    if (selectedYear !== 'all') {
+        filteredTx = transactions.filter(t => t.date && t.date.startsWith(selectedYear));
+    }
+
     let incomeTotal = 0;
     let expenseTotal = 0;
 
-    transactions.forEach(t => {
+    filteredTx.forEach(t => {
         const amt = Number(t.amount || 0);
         if (t.type === 'income') {
             incomeTotal += amt;
@@ -50,25 +93,27 @@ function updateDashboardUI() {
         }
     }
 
-    // Render Recent 5 Transactions
-    renderRecentTransactions();
+    // Render Recent 5 Transactions for filtered view
+    renderRecentTransactions(filteredTx);
 
     // Check Category Spending Limits for Warning Banners
-    checkBudgetWarnings(transactions);
+    checkBudgetWarnings(filteredTx);
 }
 
 // Render the 5 most recent transactions on the dashboard
-function renderRecentTransactions() {
+function renderRecentTransactions(txList) {
     if (!recentListEl) return;
     recentListEl.innerHTML = '';
 
-    if (transactions.length === 0) {
+    const list = txList || transactions;
+
+    if (list.length === 0) {
         recentListEl.innerHTML = '<div class="empty-state">No transactions logged yet. Add your first income or expense above!</div>';
         return;
     }
 
     // Sort newest first
-    const sorted = [...transactions].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0) || b.id - a.id);
+    const sorted = [...list].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0) || b.id - a.id);
     const recent = sorted.slice(0, 5);
 
     recent.forEach(t => {
@@ -185,8 +230,12 @@ if (modalTransactionForm) {
     });
 }
 
+if (dashboardYearSelect) {
+    dashboardYearSelect.addEventListener('change', updateDashboardUI);
+}
+
 // Initialize Dashboard UI & Dynamic Category Dropdowns on load
 setupDynamicCategoryDropdown('modal-type', 'modal-category');
 initModalDate();
-
+populateDashboardYearSelect();
 updateDashboardUI();
