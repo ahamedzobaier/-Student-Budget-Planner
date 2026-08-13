@@ -122,6 +122,13 @@ body {
     font-weight: 600;
 }
 
+/* Active link gets a solid pill on mobile for clear visibility */
+.nav-links a.active {
+    background-color: var(--primary-color) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
 .user-profile .avatar {
     width: 32px;
     height: 32px;
@@ -185,6 +192,7 @@ body {
         justify-content: flex-start;
         -webkit-overflow-scrolling: touch;
         border-top: 1px solid var(--border-color);
+        scroll-snap-type: x mandatory;
     }
 
     .nav-links a {
@@ -193,9 +201,19 @@ body {
         align-items: center;
         gap: 4px;
         font-size: 0.78rem;
-        padding: 5px 9px;
+        padding: 5px 10px;
         border-radius: 8px;
         flex-shrink: 0;
+        scroll-snap-align: center;
+        white-space: nowrap;
+    }
+
+    /* Active link on mobile: solid dark pill, always readable */
+    .nav-links a.active {
+        background-color: var(--primary-color) !important;
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        box-shadow: 0 2px 6px rgba(30, 41, 59, 0.3);
     }
 
     .nav-links a i {

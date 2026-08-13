@@ -493,9 +493,16 @@ function initLiveClock() {
 document.addEventListener('DOMContentLoaded', function() {
     updateAvatarInitial();
     initLiveClock();
+
     const avatarEls = document.querySelectorAll('.avatar, .user-profile');
     avatarEls.forEach(el => {
         el.style.cursor = 'pointer';
         el.addEventListener('click', openProfileModal);
     });
+
+    // On mobile: scroll the active nav link into view so it's always visible
+    const activeNavLink = document.querySelector('.nav-links a.active');
+    if (activeNavLink) {
+        activeNavLink.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'center' });
+    }
 });
