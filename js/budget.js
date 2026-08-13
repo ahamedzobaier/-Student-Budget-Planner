@@ -7,14 +7,17 @@ const budgetTbody = document.getElementById('budget-tbody');
 const budgetSetForm = document.getElementById('budget-set-form');
 const modalBudgetForm = document.getElementById('modal-budget-form');
 
-const defaultCategories = ['Mess Bill', 'Transport', 'Tuition', 'Recharge', 'Other Expenses'];
+const defaultCategories = ['Mess Bill', 'Tuition', 'Recharge', 'Other Expenses'];
 
 const categoryHumanNames = {
     'Mess Bill': 'Mess & Dining Bill',
-    'Transport': 'Transport & Rickshaw',
     'Tuition': 'University Tuition & Fees',
     'Recharge': 'Mobile Recharge & Data',
-    'Other Expenses': 'Other Daily Expenses'
+    'Other Expenses': 'Other Daily Expenses',
+    'Income': 'Family Support / Allowance',
+    'Tutoring': 'Part-time Tutoring',
+    'Scholarship': 'Stipend & Scholarship',
+    'Other Income': 'Other Income'
 };
 
 function getHumanCategoryName(cat) {
@@ -26,18 +29,19 @@ function renderBudgetLimitsTable() {
     const transactions = getStoredTransactions();
     const budgets = getStoredCategoryBudgets();
 
-    // Calculate total spent per expense category
+    // Calculate total spent/earned per category
     const spentByCategory = {};
     transactions.forEach(t => {
-        if (t.type === 'expense') {
-            spentByCategory[t.category] = (spentByCategory[t.category] || 0) + Number(t.amount);
-        }
+        spentByCategory[t.category] = (spentByCategory[t.category] || 0) + Number(t.amount);
     });
 
     if (!budgetTbody) return;
     budgetTbody.innerHTML = '';
 
-    defaultCategories.forEach(cat => {
+    // Render default categories plus any additional categories with custom limits set
+    const categoriesToRender = Array.from(new Set([...defaultCategories, ...Object.keys(budgets)]));
+
+    categoriesToRender.forEach(cat => {
         const limit = Number(budgets[cat] || 0);
         const spent = Number(spentByCategory[cat] || 0);
         const remaining = limit > 0 ? limit - spent : 0;

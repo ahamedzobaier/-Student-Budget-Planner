@@ -190,5 +190,8 @@ if (modalTransactionForm) {
     });
 }
 
-// Initialize Dashboard UI on load
+// Initialize Dashboard UI & Dynamic Category Dropdowns on load
+setupDynamicCategoryDropdown('type', 'category');
+setupDynamicCategoryDropdown('modal-type', 'modal-category');
+
 updateDashboardUI();

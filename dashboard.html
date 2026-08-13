@@ -25,7 +25,6 @@
                 <a href="budget.html"><i class="ph ph-chart-pie-slice"></i>Budget</a>
                 <a href="charts.html"><i class="ph ph-chart-bar"></i>Charts</a>
                 <a href="monthly.html"><i class="ph ph-calendar"></i>Monthly View</a>
-                <a href="semester.html"><i class="ph ph-graduation-cap"></i>Semester</a>
             </div>
             <div class="user-profile">
                 <div class="avatar" title="Student Profile">S</div>
@@ -60,46 +59,16 @@
         <!-- Main Dashboard 2-Column Grid -->
         <div class="grid-layout">
             <!-- Quick Add Form Card -->
-            <section class="quick-add-section card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <h3>Quick Add Transaction</h3>
-                    <button class="btn-primary" onclick="openModal('add-transaction-modal')" style="padding: 6px 12px; font-size: 0.8rem;"><i class="ph ph-plus"></i> Popup Form</button>
+            <section class="quick-add-section card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-bottom: 6px;"><i class="ph ph-plus-circle" style="color: #6366f1; margin-right: 6px;"></i>Quick Add Transaction</h3>
+                    <p style="color: var(--text-muted); font-size: 0.875rem; line-height: 1.45;">Quickly log your income or daily expenses using the interactive popup modal form.</p>
                 </div>
-                <form id="transaction-form" class="transaction-form">
-                    <div class="form-group">
-                        <label for="type">Transaction Type</label>
-                        <select id="type" required>
-                            <option value="expense">Expense</option>
-                            <option value="income">Income</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="amount">Amount (Tk)</label>
-                        <input type="number" id="amount" placeholder="Enter amount (tk)..." required min="1" step="any">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="category">Category</label>
-                        <select id="category" required>
-                            <option value="Mess Bill">Mess & Dining Bill</option>
-                            <option value="Transport">Transport & Rickshaw</option>
-                            <option value="Recharge">Mobile Recharge & Data</option>
-                            <option value="Tuition">University Tuition & Fees</option>
-                            <option value="Other Expenses">Other Daily Expenses</option>
-                            <option value="Income">Family Support / Allowance</option>
-                            <option value="Tutoring">Part-time Tutoring</option>
-                            <option value="Scholarship">Stipend & Scholarship</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="description">Description</label>
-                        <input type="text" id="description" placeholder="Enter transaction note...">
-                    </div>
-
-                    <button type="submit" class="btn-primary">+ Add Transaction</button>
-                </form>
+                <div style="margin-top: 24px;">
+                    <button type="button" class="btn-primary" onclick="openModal('add-transaction-modal')" style="width: 100%; padding: 12px; font-size: 0.95rem;">
+                        <i class="ph ph-plus"></i> Add Transaction
+                    </button>
+                </div>
             </section>
 
             <!-- Recent Transactions Widget Card -->
@@ -141,7 +110,6 @@
                     <label for="modal-category">Category</label>
                     <select id="modal-category" required>
                         <option value="Mess Bill">Mess & Dining Bill</option>
-                        <option value="Transport">Transport & Rickshaw</option>
                         <option value="Recharge">Mobile Recharge & Data</option>
                         <option value="Tuition">University Tuition & Fees</option>
                         <option value="Other Expenses">Other Daily Expenses</option>

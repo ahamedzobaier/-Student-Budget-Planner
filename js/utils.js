@@ -8,6 +8,49 @@ function formatMoney(amount) {
     return Number(amount || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 }
 
+// Category Constants for Expense and Income
+const EXPENSE_CATEGORIES = [
+    { value: 'Mess Bill', label: 'Mess & Dining Bill' },
+    { value: 'Recharge', label: 'Mobile Recharge & Data' },
+    { value: 'Tuition', label: 'University Tuition & Fees' },
+    { value: 'Other Expenses', label: 'Other Daily Expenses' }
+];
+
+const INCOME_CATEGORIES = [
+    { value: 'Income', label: 'Family Support / Allowance' },
+    { value: 'Tutoring', label: 'Part-time Tutoring' },
+    { value: 'Scholarship', label: 'Stipend & Scholarship' },
+    { value: 'Other Income', label: 'Other Income' }
+];
+
+// Dynamically filter Category dropdown based on Transaction Type (Income vs Expense)
+function setupDynamicCategoryDropdown(typeSelectId, categorySelectId) {
+    const typeEl = document.getElementById(typeSelectId);
+    const catEl = document.getElementById(categorySelectId);
+    if (!typeEl || !catEl) return;
+
+    function updateOptions() {
+        const selectedType = typeEl.value;
+        const list = selectedType === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+        const currentVal = catEl.value;
+
+        catEl.innerHTML = '';
+        list.forEach(cat => {
+            const opt = document.createElement('option');
+            opt.value = cat.value;
+            opt.textContent = cat.label;
+            catEl.appendChild(opt);
+        });
+
+        if (list.some(c => c.value === currentVal)) {
+            catEl.value = currentVal;
+        }
+    }
+
+    typeEl.addEventListener('change', updateOptions);
+    updateOptions();
+}
+
 // Full 12-Month Configuration List for dropdowns and tables
 const ALL_12_MONTHS = [
     { key: '2026-01', name: 'Jan', fullName: 'January 2026' },

@@ -137,6 +137,72 @@ body {
     flex-shrink: 0;
 }
 
+/* Mobile Responsive Navigation Bar (Two-Row Header Layout) */
+@media (max-width: 768px) {
+    body {
+        padding-top: 110px; /* Reserved space for two-row floating top navbar */
+        padding-bottom: 20px;
+    }
+
+    .floating-nav {
+        top: 6px;
+        height: auto;
+        padding: 8px 12px;
+    }
+
+    .nav-content {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+        gap: 6px 10px;
+        align-items: center;
+    }
+
+    .logo {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .user-profile {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .nav-links {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        position: static;
+        transform: none;
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        padding: 4px 0 2px 0;
+        gap: 4px;
+        overflow-x: auto;
+        justify-content: flex-start;
+        -webkit-overflow-scrolling: touch;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .nav-links a {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.78rem;
+        padding: 5px 9px;
+        border-radius: 8px;
+        flex-shrink: 0;
+    }
+
+    .nav-links a i {
+        font-size: 0.95rem;
+    }
+}
+
 /* --------------------------------------------------------------------------
    4. DASHBOARD STAT CARDS & GRID LAYOUTS
    Top overview cards and main responsive grid structure
@@ -253,42 +319,65 @@ body {
 }
 
 input, select {
-    padding: 9px 12px;
-    border: 1px solid var(--border-color);
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
     border-radius: var(--radius-md);
     font-size: 0.9rem;
     font-family: inherit;
     background-color: #f8fafc;
-    transition: all 0.15s ease;
+    color: var(--text-main);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     width: 100%;
+}
+
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 256 256'%3E%3Cpath fill='%23475569' d='M213.66 101.66l-80 80a8 8 0 0 1-11.32 0l-80-80a8 8 0 0 1 11.32-11.32L128 164.69l74.34-74.35a8 8 0 0 1 11.32 11.32z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 14px 14px;
+    padding-right: 36px;
+    cursor: pointer;
+}
+
+select option {
+    background-color: #ffffff;
+    color: #0f172a;
+    padding: 10px 14px;
+    font-size: 0.9rem;
 }
 
 input:focus, select:focus {
     outline: none;
-    border-color: var(--primary-color);
-    background-color: #fff;
-    box-shadow: 0 0 0 3px rgba(30, 41, 59, 0.08);
+    border-color: #6366f1;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }
 
 /* Action Buttons */
 .btn-primary {
-    background-color: var(--primary-color);
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
     color: white;
     border: none;
-    padding: 10px 16px;
+    padding: 11px 18px;
     border-radius: var(--radius-md);
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.15s, transform 0.1s;
+    transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .btn-primary:hover {
-    background-color: #334155;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
 }
 
 .btn-primary:active {
@@ -296,15 +385,15 @@ input:focus, select:focus {
 }
 
 .btn-secondary {
-    background-color: #e2e8f0;
+    background-color: #f1f5f9;
     color: var(--text-main);
-    border: none;
+    border: 1px solid var(--border-color);
     padding: 10px 16px;
     border-radius: var(--radius-md);
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.15s;
+    transition: all 0.15s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -312,19 +401,20 @@ input:focus, select:focus {
 }
 
 .btn-secondary:hover {
-    background-color: #cbd5e1;
+    background-color: #e2e8f0;
+    color: var(--primary-color);
 }
 
 .btn-danger-outline {
     background: transparent;
     color: var(--red);
     border: 1px solid var(--red);
-    padding: 7px 14px;
+    padding: 8px 14px;
     border-radius: var(--radius-md);
     cursor: pointer;
     font-weight: 600;
     font-size: 0.85rem;
-    transition: all 0.15s;
+    transition: all 0.15s ease;
     display: inline-flex;
     align-items: center;
     gap: 4px;
@@ -333,6 +423,7 @@ input:focus, select:focus {
 .btn-danger-outline:hover {
     background: var(--red);
     color: white;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
 
 /* --------------------------------------------------------------------------
@@ -345,9 +436,9 @@ input:focus, select:focus {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(15, 23, 42, 0.55);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background-color: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     z-index: 2000;
     display: flex;
     align-items: center;
@@ -365,18 +456,18 @@ input:focus, select:focus {
 
 .modal-card {
     background: #ffffff;
-    border-radius: var(--radius-lg);
+    border-radius: 18px;
     width: 100%;
     max-width: 480px;
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.25);
     border: 1px solid var(--border-color);
     padding: 24px;
-    transform: scale(0.92);
+    transform: scale(0.92) translateY(8px);
     transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .modal-backdrop.active .modal-card {
-    transform: scale(1);
+    transform: scale(1) translateY(0);
 }
 
 .modal-header {

@@ -154,6 +154,35 @@ if (modalTransactionForm) {
     });
 }
 
+// Dynamic Category Filter listener for Filter Bar
+if (typeFilter && categoryFilter) {
+    typeFilter.addEventListener('change', function() {
+        const selectedType = typeFilter.value;
+        categoryFilter.innerHTML = '<option value="all">All Categories</option>';
+
+        let list = [];
+        if (selectedType === 'income') {
+            list = INCOME_CATEGORIES;
+        } else if (selectedType === 'expense') {
+            list = EXPENSE_CATEGORIES;
+        } else {
+            list = [...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES];
+        }
+
+        list.forEach(cat => {
+            const opt = document.createElement('option');
+            opt.value = cat.value;
+            opt.textContent = cat.label;
+            categoryFilter.appendChild(opt);
+        });
+
+        renderTransactionsTable();
+    });
+}
+
+// Setup dynamic category dropdown for Add Transaction modal
+setupDynamicCategoryDropdown('modal-type', 'modal-category');
+
 // Attach filter listeners
 if (typeFilter) typeFilter.addEventListener('change', renderTransactionsTable);
 if (categoryFilter) categoryFilter.addEventListener('change', renderTransactionsTable);

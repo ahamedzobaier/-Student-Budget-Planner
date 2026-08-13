@@ -25,7 +25,6 @@
                 <a href="budget.html" class="active"><i class="ph ph-chart-pie-slice"></i>Budget</a>
                 <a href="charts.html"><i class="ph ph-chart-bar"></i>Charts</a>
                 <a href="monthly.html"><i class="ph ph-calendar"></i>Monthly View</a>
-                <a href="semester.html"><i class="ph ph-graduation-cap"></i>Semester</a>
             </div>
             <div class="user-profile">
                 <div class="avatar" title="Student Profile">S</div>
@@ -34,12 +33,12 @@
     </nav>
 
     <main class="dashboard-container">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 4px;">
             <div>
                 <h2>Category Budget Limits</h2>
                 <p style="color: var(--text-muted); margin-top: 2px; font-size: 0.85rem;">Set monthly spending limits per category and monitor spent vs limit in real time.</p>
             </div>
-            <button class="btn-primary" onclick="openModal('set-budget-modal')" style="padding: 7px 14px; font-size: 0.85rem;"><i class="ph ph-sliders"></i> Set Limit Modal</button>
+            <button class="btn-primary" onclick="openModal('set-budget-modal')"><i class="ph ph-plus-circle"></i> Set Category Budget Limit</button>
         </div>
 
         <!-- Budget Limits Table -->
@@ -60,30 +59,6 @@
                 </tbody>
             </table>
         </section>
-
-        <!-- Inline Form for Quick Limit Setup -->
-        <section class="card" style="margin-top: 10px;">
-            <h3>Quick Update Budget Limit</h3>
-            <form id="budget-set-form" class="transaction-form" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;">
-                <div class="form-group" style="flex: 1; min-width: 160px;">
-                    <label for="budget-cat-select">Category</label>
-                    <select id="budget-cat-select" required>
-                        <option value="Mess Bill">Mess & Dining Bill</option>
-                        <option value="Transport">Transport & Rickshaw</option>
-                        <option value="Tuition">University Tuition & Fees</option>
-                        <option value="Recharge">Mobile Recharge & Data</option>
-                        <option value="Other Expenses">Other Daily Expenses</option>
-                    </select>
-                </div>
-
-                <div class="form-group" style="flex: 1; min-width: 160px;">
-                    <label for="budget-limit-input">Monthly Limit (Tk)</label>
-                    <input type="number" id="budget-limit-input" placeholder="e.g. 2000" required min="1">
-                </div>
-
-                <button type="submit" class="btn-primary" style="padding: 9px 20px;">Save Limit</button>
-            </form>
-        </section>
     </main>
 
     <!-- Modal Popup Form for Setting Budget Limits -->
@@ -97,11 +72,18 @@
                 <div class="form-group">
                     <label for="modal-budget-cat">Category</label>
                     <select id="modal-budget-cat" required>
-                        <option value="Mess Bill">Mess & Dining Bill</option>
-                        <option value="Transport">Transport & Rickshaw</option>
-                        <option value="Tuition">University Tuition & Fees</option>
-                        <option value="Recharge">Mobile Recharge & Data</option>
-                        <option value="Other Expenses">Other Daily Expenses</option>
+                        <optgroup label="Expense Categories">
+                            <option value="Mess Bill">Mess & Dining Bill</option>
+                            <option value="Tuition">University Tuition & Fees</option>
+                            <option value="Recharge">Mobile Recharge & Data</option>
+                            <option value="Other Expenses">Other Daily Expenses</option>
+                        </optgroup>
+                        <optgroup label="Income Categories">
+                            <option value="Income">Family Support / Allowance</option>
+                            <option value="Tutoring">Part-time Tutoring</option>
+                            <option value="Scholarship">Stipend & Scholarship</option>
+                            <option value="Other Income">Other Income</option>
+                        </optgroup>
                     </select>
                 </div>
                 

@@ -3,7 +3,7 @@
 const matrixTbody = document.getElementById('monthly-matrix-tbody');
 
 const defaultIncomeCategories = ['Income', 'Tutoring', 'Scholarship', 'Other Income'];
-const defaultExpenseCategories = ['Mess Bill', 'Transport', 'Tuition', 'Recharge', 'Other Expenses'];
+const defaultExpenseCategories = ['Mess Bill', 'Tuition', 'Recharge', 'Other Expenses'];
 
 // Friendly category label maps
 const categoryHumanNames = {
@@ -12,7 +12,6 @@ const categoryHumanNames = {
     'Scholarship': 'Stipend & Scholarship',
     'Other Income': 'Other Income',
     'Mess Bill': 'Mess & Dining Bill',
-    'Transport': 'Transport & Rickshaw',
     'Tuition': 'University Tuition & Fees',
     'Recharge': 'Mobile Recharge & Data',
     'Other Expenses': 'Other Daily Expenses'
