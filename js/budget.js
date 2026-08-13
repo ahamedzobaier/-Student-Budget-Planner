@@ -150,6 +150,25 @@ function renderBudgetLimitsTable() {
     });
 }
 
+// Auto-fill existing limit when category changes in modal
+const modalBudgetCat = document.getElementById('modal-budget-cat');
+const modalBudgetLimit = document.getElementById('modal-budget-limit');
+
+function syncModalCategoryLimit() {
+    if (!modalBudgetCat || !modalBudgetLimit) return;
+    const cat = modalBudgetCat.value;
+    const budgets = getStoredCategoryBudgets();
+    if (budgets[cat]) {
+        modalBudgetLimit.value = budgets[cat];
+    } else {
+        modalBudgetLimit.value = '';
+    }
+}
+
+if (modalBudgetCat) {
+    modalBudgetCat.addEventListener('change', syncModalCategoryLimit);
+}
+
 // Save budget limit for a category
 function saveCategoryLimit(category, limitAmount) {
     const limit = parseFloat(limitAmount);
@@ -187,7 +206,7 @@ if (modalBudgetForm) {
 });
 
 // Initial setup
-setupDynamicCategoryDropdown('modal-budget-cat', null);
 initBudgetMonthSelect();
 populateBudgetYearSelect();
 renderBudgetLimitsTable();
+syncModalCategoryLimit();
