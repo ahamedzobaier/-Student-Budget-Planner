@@ -252,72 +252,74 @@ function closeModal(modalId) {
     }
 }
 
-// Show Interactive Demo Student Profile Modal Popup
+// Show Interactive Demo Student Profile Modal Popover
 function openProfileModal() {
     let modal = document.getElementById('demo-profile-modal');
     if (!modal) {
         modal = document.createElement('div');
         modal.id = 'demo-profile-modal';
         modal.className = 'modal-backdrop';
+        modal.style.alignItems = 'flex-start';
+        modal.style.paddingTop = '68px';
         document.body.appendChild(modal);
     }
 
     const { totalIncome, totalExpense, currentBalance } = getCurrentFinancialSummary();
 
     modal.innerHTML = `
-        <div class="modal-card" style="max-width: 440px;">
-            <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px;">
+        <div class="modal-card profile-popover-card" style="max-width: 420px; margin-left: auto; margin-right: 4%; transform-origin: top right;">
+            <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 14px;">
                 <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #1e293b 0%, #475569 100%); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem; box-shadow: var(--shadow-md); border: 2px solid #6366f1;">S</div>
+                    <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #1e293b 0%, #475569 100%); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.15rem; box-shadow: var(--shadow-md); border: 2px solid #6366f1;">S</div>
                     <div>
                         <h3 style="font-size: 1.05rem; color: var(--text-main); font-weight: 700;">Student Demo Profile</h3>
-                        <span style="font-size: 0.78rem; color: var(--green); font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
-                            <span style="width: 8px; height: 8px; background-color: var(--green); border-radius: 50%; display: inline-block;"></span> Active Student Account
+                        <span style="font-size: 0.76rem; color: var(--green); font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                            <span style="width: 7px; height: 7px; background-color: var(--green); border-radius: 50%; display: inline-block;"></span> Active Account
                         </span>
                     </div>
                 </div>
                 <button class="modal-close-btn" onclick="closeModal('demo-profile-modal')">&times;</button>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 14px;">
-                <div style="background-color: #f8fafc; padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 8px;">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="background-color: #f8fafc; padding: 12px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 6px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.825rem;">
                         <span style="color: var(--text-muted);">University:</span>
                         <strong style="color: var(--text-main);">Uttara University</strong>
                     </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.825rem;">
                         <span style="color: var(--text-muted);">Department:</span>
                         <strong style="color: var(--text-main);">Computer Science (CSE)</strong>
                     </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.825rem;">
                         <span style="color: var(--text-muted);">Student ID:</span>
                         <strong style="color: var(--text-main);">UG-2026-BD89</strong>
                     </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.825rem;">
                         <span style="color: var(--text-muted);">Semester:</span>
                         <strong style="color: var(--text-main);">6th Semester</strong>
                     </div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-                    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 10px 12px; border-radius: 10px; text-align: center;">
-                        <span style="font-size: 0.75rem; color: #166534; font-weight: 600;">Total Income</span>
-                        <div style="font-weight: 700; font-size: 1.05rem; color: var(--green); margin-top: 2px;">Tk ${formatMoney(totalIncome)}</div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+                    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 8px 10px; border-radius: 10px; text-align: center;">
+                        <span style="font-size: 0.725rem; color: #166534; font-weight: 600;">Total Income</span>
+                        <div style="font-weight: 700; font-size: 1rem; color: var(--green); margin-top: 2px;">Tk ${formatMoney(totalIncome)}</div>
                     </div>
-                    <div style="background: #fef2f2; border: 1px solid #fecaca; padding: 10px 12px; border-radius: 10px; text-align: center;">
-                        <span style="font-size: 0.75rem; color: #991b1b; font-weight: 600;">Total Expense</span>
-                        <div style="font-weight: 700; font-size: 1.05rem; color: var(--red); margin-top: 2px;">Tk ${formatMoney(totalExpense)}</div>
+                    <div style="background: #fef2f2; border: 1px solid #fecaca; padding: 8px 10px; border-radius: 10px; text-align: center;">
+                        <span style="font-size: 0.725rem; color: #991b1b; font-weight: 600;">Total Expense</span>
+                        <div style="font-weight: 700; font-size: 1rem; color: var(--red); margin-top: 2px;">Tk ${formatMoney(totalExpense)}</div>
                     </div>
                 </div>
 
-                <div style="background-color: #f1f5f9; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-main);">Available Balance:</span>
-                    <strong style="font-size: 1.1rem; color: var(--primary-color);">Tk ${formatMoney(currentBalance)}</strong>
+                <div style="background-color: #f1f5f9; padding: 10px 14px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.825rem; font-weight: 600; color: var(--text-main);">Available Balance:</span>
+                    <strong style="font-size: 1.05rem; color: var(--primary-color);">Tk ${formatMoney(currentBalance)}</strong>
                 </div>
             </div>
 
-            <div class="modal-footer" style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border-color);">
-                <button class="btn-secondary" onclick="closeModal('demo-profile-modal')" style="width: 100%;">Close Profile</button>
+            <div class="modal-footer" style="margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--border-color);">
+                <button class="btn-secondary" onclick="closeModal('demo-profile-modal')" style="width: 100%; padding: 8px;">Close Profile</button>
             </div>
         </div>
     `;
