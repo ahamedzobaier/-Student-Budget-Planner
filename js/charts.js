@@ -16,7 +16,7 @@ const colorPalette = [
 
 function renderCharts() {
     const transactions = getStoredTransactions();
-    const selectedMonth = monthSelect ? monthSelect.value : '2026-06';
+    const selectedMonth = monthSelect ? monthSelect.value : 'all';
 
     // Filter expenses for Pie Chart
     const expenses = transactions.filter(t => t.type === 'expense');
