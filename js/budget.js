@@ -30,10 +30,8 @@ const budgetYearSelect = document.getElementById('budget-year-select');
 // Auto-select current month (e.g. August = 8) on load
 function initBudgetMonthSelect() {
     if (!budgetMonthSelect) return;
-    if (!budgetMonthSelect.value) {
-        const currentMonth = (new Date().getMonth() + 1).toString();
-        budgetMonthSelect.value = currentMonth;
-    }
+    const currentMonth = (new Date().getMonth() + 1).toString();
+    budgetMonthSelect.value = currentMonth;
 }
 
 // Populate Year Selector for Budget Page
