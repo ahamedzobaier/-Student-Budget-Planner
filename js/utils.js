@@ -258,9 +258,17 @@ function openProfileModal() {
     if (!modal) {
         modal = document.createElement('div');
         modal.id = 'demo-profile-modal';
-        modal.className = 'modal-backdrop';
+        modal.className = 'modal-backdrop profile-modal-no-blur';
         modal.style.alignItems = 'flex-start';
         modal.style.paddingTop = '68px';
+
+        // Close when clicking outside card
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal('demo-profile-modal');
+            }
+        });
+
         document.body.appendChild(modal);
     }
 
