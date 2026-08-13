@@ -31,7 +31,9 @@ function populateYearFilter() {
     });
 
     const sortedYears = Array.from(years).sort((a, b) => b - a);
-    const selectedVal = yearFilter.value;
+    // Capture previous selection only if it was a real year (not "all")
+    const prevVal = yearFilter.value;
+    const wasYear = prevVal && prevVal !== 'all' && sortedYears.includes(parseInt(prevVal, 10));
 
     yearFilter.innerHTML = '<option value="all">All Years</option>';
     sortedYears.forEach(yr => {
@@ -41,12 +43,8 @@ function populateYearFilter() {
         yearFilter.appendChild(opt);
     });
 
-    if (selectedVal && Array.from(yearFilter.options).some(o => o.value === selectedVal)) {
-        yearFilter.value = selectedVal;
-    } else {
-        // Default to current year
-        yearFilter.value = currentYear.toString();
-    }
+    // Restore a previously chosen year, otherwise default to current year
+    yearFilter.value = wasYear ? prevVal : currentYear.toString();
 }
 
 // Auto-select current month in the month filter dropdown
