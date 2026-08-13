@@ -43,7 +43,17 @@ function populateYearFilter() {
 
     if (selectedVal && Array.from(yearFilter.options).some(o => o.value === selectedVal)) {
         yearFilter.value = selectedVal;
+    } else {
+        // Default to current year
+        yearFilter.value = currentYear.toString();
     }
+}
+
+// Auto-select current month in the month filter dropdown
+function initDefaultMonthFilter() {
+    if (!monthFilter) return;
+    const currentMonth = (new Date().getMonth() + 1).toString();
+    monthFilter.value = currentMonth;
 }
 
 // Format date string for standard table display (timezone-safe)
@@ -254,4 +264,5 @@ if (typeFilter && categoryFilter) {
 setupDynamicCategoryDropdown('modal-type', 'modal-category');
 initModalDate();
 populateYearFilter();
+initDefaultMonthFilter();
 renderTransactionsTable();

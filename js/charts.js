@@ -184,6 +184,14 @@ function renderCharts() {
     if (el) el.addEventListener('change', renderCharts);
 });
 
+// Auto-select current month in the chart month dropdown
+function initDefaultChartMonth() {
+    if (!monthSelect) return;
+    const currentMonth = (new Date().getMonth() + 1).toString();
+    monthSelect.value = currentMonth;
+}
+
 // Initial load
 populateChartYearSelect();
+initDefaultChartMonth();
 renderCharts();
