@@ -186,6 +186,14 @@ function saveCategoryLimit(category, limitAmount) {
     return true;
 }
 
+// Pre-fill today's current date on category budget modal date field automatically
+function initBudgetModalDate() {
+    const dateInput = document.getElementById('modal-budget-date');
+    if (dateInput) {
+        dateInput.value = new Date().toISOString().split('T')[0];
+    }
+}
+
 // Handle Modal Budget Form Submit
 if (modalBudgetForm) {
     modalBudgetForm.addEventListener('submit', function(e) {
@@ -196,6 +204,7 @@ if (modalBudgetForm) {
         const success = saveCategoryLimit(cat, limit);
         if (success) {
             modalBudgetForm.reset();
+            initBudgetModalDate();
             closeModal('set-budget-modal');
         }
     });
@@ -210,3 +219,4 @@ initBudgetMonthSelect();
 populateBudgetYearSelect();
 renderBudgetLimitsTable();
 syncModalCategoryLimit();
+initBudgetModalDate();
