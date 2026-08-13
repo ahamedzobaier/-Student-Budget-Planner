@@ -259,8 +259,6 @@ function openProfileModal() {
         modal = document.createElement('div');
         modal.id = 'demo-profile-modal';
         modal.className = 'modal-backdrop profile-modal-no-blur';
-        modal.style.alignItems = 'flex-start';
-        modal.style.paddingTop = '68px';
 
         // Close when clicking outside card
         modal.addEventListener('click', function(e) {
@@ -275,7 +273,7 @@ function openProfileModal() {
     const { totalIncome, totalExpense, currentBalance } = getCurrentFinancialSummary();
 
     modal.innerHTML = `
-        <div class="modal-card profile-popover-card" style="max-width: 420px; margin-left: auto; margin-right: 4%; transform-origin: top right;">
+        <div class="modal-card profile-popover-card">
             <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 14px;">
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #1e293b 0%, #475569 100%); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.15rem; box-shadow: var(--shadow-md); border: 2px solid #6366f1;">S</div>

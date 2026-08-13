@@ -454,6 +454,42 @@ input:focus, select:focus {
     background-color: transparent !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+    align-items: flex-start;
+    padding: 0;
+}
+
+.profile-popover-card {
+    position: fixed;
+    top: 70px;
+    right: max(2.5%, calc((100vw - 1200px) / 2 + 2.5%));
+    width: 380px;
+    max-width: 92vw;
+    box-shadow: 0 16px 36px -6px rgba(15, 23, 42, 0.22), 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    background: #ffffff;
+    z-index: 2005;
+    animation: popoverFadeDown 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes popoverFadeDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-popover-card {
+        top: 58px;
+        right: 3%;
+        width: 94vw;
+        max-width: 100%;
+    }
 }
 
 .modal-backdrop.active {
